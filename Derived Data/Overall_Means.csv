@@ -1,0 +1,95 @@
+MIDAS,Lake,Town,Station,Min_Sec,Min_Sec_Bottom_,Mean_Sec,Mean_Sec_Bottom_,Max_Sec,Max_Sec_Bottom_,Num_Months_Secchi,Min_Col,Mean_Col,Max_Col,Min_Chla,Mean_Chla,Max_Chla,Ph,Alkalinity,Conductivity,Tphos_Ec,Tphos_Sg,Tphos_Bg,Tphos_Pg,Tsi_Sec,Tsi_Chl,Tsi_Tpec,Tsi_Tppg
+3188,Ingalls (Foster's) Pond,Bridgton,1,3.1,NA,6.8,*,9,*,35,1,11,26,0.5,2.2,6.9,6.69,6.1,20,7,13,12,7,35,33,33,NA
+3228,Duck Pond,Waterford,1,0.8,*,2.3,*,3.3,*,9,27,39,56,3.1,8.1,13,6.35,4.3,11,20,22,NA,NA,NA,NA,NA,NA
+3230,Black Pond,Sweden,1,2.2,NA,2.3,NA,2.3,NA,1,NA,NA,NA,3.5,6.8,10.1,6.01,NA,NA,NA,19,NA,NA,NA,NA,NA,NA
+3234,Stearns Pond,Sweden,1,3.1,NA,5.1,*,7.5,NA,40,1,25,57,1,3.5,16,6.62,6.8,30,9,NA,18,11,47,41,38,NA
+3262,Songo Pond,"Bethel, Albany Twp",1,2.1,NA,3.8,NA,5.4,NA,30,42,52,57,2.6,5.5,12.1,6.26,4.8,34,11,NA,16,13,NA,46,NA,NA
+3264,Broken Bridge Pond,Albany Twp,1,3.2,NA,4.2,NA,5.6,NA,2,NA,NA,NA,3.6,5.7,7.3,NA,4,18,11,NA,13,NA,NA,NA,NA,NA
+3272,Keewaydin Lake,Stoneham,1,3.4,NA,5.2,NA,6.3,NA,4,NA,NA,NA,2.2,2.9,3.5,6.56,4.8,24,7,NA,14,NA,NA,NA,NA,NA
+3370,Holt Pond,Bridgton,1,2.4,*,3,*,3.4,*,19,19,49,96,1.3,4,8.7,6.42,9.2,39,13,12,NA,NA,NA,NA,NA,NA
+3374,Peabody Pond,"Bridgton, Sebago",1,4.6,NA,7.3,*,10.4,NA,37,1,13,35,0.8,2.6,10,6.71,6.2,23,6,NA,8,8,30,37,29,34
+3374,Peabody Pond,"Bridgton, Sebago",2,5.5,NA,7.2,NA,8.2,NA,2,NA,NA,NA,5,5,5,6.63,7.3,NA,NA,NA,7,7,NA,NA,NA,NA
+3374,Peabody Pond,"Bridgton, Sebago",3,5.7,NA,7.1,NA,8.2,NA,1,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+3376,Cold Rain Pond,Naples,1,2.8,NA,4.8,*,6.4,NA,32,7,24,40,1.8,5,11.4,6.64,7.4,26,11,NA,33,16,51,45,42,NA
+3382,Tricky Pond,Naples,1,5,NA,10,*,14.7,NA,39,0,8,30,0.5,1.8,6.7,6.72,7.6,38,5,1,11,10,17,27,27,NA
+3382,Tricky Pond,Naples,2,8.2,NA,10.4,NA,12.4,NA,6,NA,NA,NA,0.9,1.2,1.5,7.02,3.8,29,7,NA,10,NA,NA,NA,NA,NA
+3388,Parker Pond,Casco,1,2.5,*,5.6,*,6.8,*,29,4,7,11,1.4,4.5,13,6.56,9.3,47,9,8,10,NA,48,NA,NA,NA
+3388,Parker Pond,Casco,2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,7,NA,NA,NA,NA,NA,NA
+3390,Coffee Pond,Casco,1,5,NA,8.6,NA,14,NA,30,3,4,4,0.6,1.5,4.5,6.86,7.4,44,11,5,16,NA,28,30,35,NA
+3392,Thomas Pond,"Casco, Raymond",1,3.5,NA,6.3,NA,8.7,NA,35,6,8,10,2.1,3.3,7.2,6.86,11.5,56,8,7,17,NA,37,NA,NA,NA
+3396,Adams Pond,Bridgton,1,3.8,NA,7.3,*,10.7,*,30,1,11,27,0.5,2.9,8.9,6.02,9.9,36,8,NA,40,33,30,38,32,NA
+3414,Papoose Pond,Waterford,1,1.6,NA,3.5,*,5.1,*,30,8,30,70,1.1,5.8,22,6.53,7.9,33,14,12,32,14,69,61,50,47
+3414,Papoose Pond,Waterford,2,3.2,*,3.9,*,4.8,*,2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,65,NA,NA,NA
+3416,Keoka Lake,Waterford,1,3,NA,5.6,NA,7.9,NA,42,1,18,35,0.9,3.9,18,6.71,8.1,37,9,8,18,14,42,44,36,43
+3416,Keoka Lake,Waterford,2,4.3,NA,5.8,NA,7,NA,10,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,39,NA,NA,NA
+3417,Bog Pond,Waterford,1,1.3,*,1.5,*,1.5,*,9,33,53,76,2.3,3.8,5.3,6.5,4.3,13,12,15,NA,NA,NA,NA,NA,NA
+3418,Long (McWain) Pond,Waterford,1,2.2,NA,5.8,NA,9.3,NA,41,1,17,35,1,3,15.2,6.48,5.8,28,7,7,11,10,42,39,32,46
+3418,Long (McWain) Pond,Waterford,2,4.8,NA,5.3,NA,5.8,NA,1,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+3420,Bear Pond,Waterford,1,3,NA,5.5,NA,7.6,NA,39,3,20,40,1,3.7,11,6.7,8.1,35,9,5,15,11,44,45,41,42
+3424,Moose Pond,Waterford,1,4.5,NA,7.3,NA,9.9,NA,31,1,12,28,0.5,2.3,4.7,6.67,6.2,22,6,NA,15,10,29,33,29,NA
+3424,Moose Pond,Waterford,4,3.1,NA,3.5,NA,3.8,NA,1,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+3446,Pleasant Lake,"Casco, Otisfield",1,4,NA,8.5,NA,11.8,NA,40,1,4,6,0.7,2.4,3.9,6.79,8.6,42,5,5,11,NA,24,25,NA,NA
+3446,Pleasant Lake,"Casco, Otisfield",2,4.7,NA,7,NA,9.2,NA,1,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,4,NA,NA,NA,NA,NA,NA
+3448,Island Pond,"Harrison, Waterford",1,2.9,NA,5.7,NA,8.9,NA,32,1,18,38,0.5,3.3,13.5,6.59,7.6,39,8,NA,13,11,41,42,33,NA
+3452,Crystal (Anonymous) Lake,Harrison,1,2.3,NA,5.6,NA,10,NA,43,5,20,46,1,2.7,9.5,6.74,8,45,7,NA,10,8,42,38,35,30
+3454,Highland Lake,Bridgton,1,1.5,NA,6.7,NA,9.4,NA,45,1,15,35,1,2.8,10.3,6.65,7.3,32,7,NA,13,11,33,38,33,38
+3454,Highland Lake,Bridgton,2,6,NA,6.2,NA,6.4,NA,2,NA,NA,NA,NA,NA,NA,6.8,NA,NA,NA,NA,NA,5,NA,NA,NA,NA
+3454,Highland Lake,Bridgton,3,5.5,NA,6.1,NA,6.7,NA,2,NA,NA,NA,NA,NA,NA,6.8,NA,NA,NA,NA,NA,5,NA,NA,NA,NA
+3456,Woods Pond,Bridgton,1,2.5,NA,4.8,*,7.5,*,44,5,32,68,1.3,3.2,10.6,6.43,5.6,26,9,4,12,7,NA,40,NA,NA
+3458,Otter Pond,Bridgton,1,2.2,NA,3.9,*,5.6,NA,30,24,43,75,2,3.9,11.8,6.59,10.7,40,12,NA,18,18,NA,54,NA,NA
+3492,Speck Pond #2,Norway,1,5.5,NA,5.5,NA,5.5,NA,1,NA,NA,NA,NA,NA,NA,6.9,8,42,NA,NA,NA,NA,NA,NA,NA,NA
+3494,Hutchinson Pond,Albany Twp,1,4.5,NA,5,NA,5.7,NA,2,NA,NA,NA,2.7,2.7,2.7,NA,NA,NA,7,NA,22,NA,NA,NA,NA,NA
+3690,Raymond (Little Rattlesnake) Pond,Raymond,1,3.3,NA,6.1,NA,8.5,NA,37,8,11,13,1.8,3.5,8.6,7.15,11.3,48,7,7,19,NA,38,48,42,NA
+3692,Nubble Pond,Raymond,1,0.8,NA,3,NA,4.4,NA,6,NA,NA,NA,2.2,8.4,26.6,6,10.5,25,16,13,36,NA,104,74,52,NA
+3694,Panther Pond,Raymond,1,4.6,NA,6.8,NA,9.3,NA,41,8,9,10,1.5,3,4.2,7.07,9.9,52,6,8,11,NA,33,37,37,NA
+3696,Crescent (Rattlesnake) Lake,"Casco, Raymond",1,4.3,NA,6.4,NA,9.2,NA,38,6,8,11,1.4,3.2,5.8,6.93,11.6,57,7,8,15,NA,37,37,39,NA
+3696,Crescent (Rattlesnake) Lake,"Casco, Raymond",2,4,NA,6.6,NA,8.8,NA,17,NA,NA,NA,2.2,2.2,2.2,6.72,11,48,13,7,NA,NA,36,NA,NA,NA
+3698,Dumpling Pond,Casco,1,3.8,*,3.9,*,3.9,*,2,NA,NA,NA,3.7,3.7,3.7,NA,9,51,9,NA,NA,NA,NA,NA,NA,NA
+3700,Sabbathday Lake,New Gloucester,1,4,NA,6.7,*,9.2,NA,37,6,11,17,1.6,3.8,10.6,7.03,10.9,0,6,7,12,NA,35,46,34,NA
+3700,Sabbathday Lake,New Gloucester,2,4.7,NA,6.9,NA,8.7,NA,8,NA,NA,NA,NA,NA,NA,NA,NA,NA,8,NA,NA,NA,34,NA,NA,NA
+3700,Sabbathday Lake,New Gloucester,98,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,120,NA,NA,NA,NA,NA,NA
+3702,Lily Pond,New Gloucester,1,3.2,NA,3.8,NA,4.3,NA,1,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+3706,Notched Pond,"Gray, Raymond",1,3,NA,5.4,*,6.4,*,40,10,13,18,1.9,3.1,7.1,6.88,8.8,58,8,6,16,NA,44,45,NA,NA
+3708,Crystal Lake (Dry Pond),Gray,1,3.6,NA,6.1,NA,9.5,NA,36,9,11,12,1.3,4.4,8.3,6.87,5.3,35,7,6,13,NA,38,49,38,NA
+3712,Forest Lake (Goose Pond),"Cumberland, Gray, Windham",1,2.2,NA,5.3,NA,7.4,NA,35,6,14,22,1.3,3.2,8.5,6.17,8.8,60,8,7,38,NA,45,45,47,NA
+3712,Forest Lake (Goose Pond),"Cumberland, Gray, Windham",2,2.2,NA,4.9,*,7,NA,8,NA,NA,NA,NA,NA,NA,6.66,NA,NA,NA,NA,NA,NA,52,NA,NA,NA
+3714,Little Sebago Lake,"Gray, Windham",1,1.8,NA,4,*,7.9,*,34,26,27,28,1.8,4.8,8.8,6.22,10.3,40,10,NA,17,NA,62,36,NA,NA
+3714,Little Sebago Lake,"Gray, Windham",2,3,NA,5.9,*,8.8,NA,23,6,6,6,2.1,2.4,2.8,6.57,9.7,34,5,3,8,NA,39,NA,NA,NA
+3714,Little Sebago Lake,"Gray, Windham",3,3.6,NA,6.7,NA,9.8,NA,37,8,10,11,2.5,3.8,5.4,6.42,10.8,42,8,6,13,NA,34,NA,NA,NA
+3714,Little Sebago Lake,"Gray, Windham",4,3.5,NA,5.5,*,8.1,NA,37,13,15,16,2.6,4.2,7.9,7.13,11.5,52,10,7,20,NA,45,NA,NA,NA
+3714,Little Sebago Lake,"Gray, Windham",5,5.5,NA,6.7,NA,7.8,NA,2,NA,NA,NA,NA,NA,NA,NA,NA,NA,15,NA,NA,NA,34,NA,NA,NA
+3714,Little Sebago Lake,"Gray, Windham",6,5,NA,6.3,NA,7.5,NA,3,NA,NA,NA,NA,NA,NA,NA,NA,NA,37,NA,NA,NA,32,NA,NA,NA
+3714,Little Sebago Lake,"Gray, Windham",7,4.5,NA,5.4,NA,7.3,NA,3,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,34,NA,NA,NA
+3716,Pettingill Pond,Windham,1,3,NA,5.4,NA,8.4,NA,23,9,9,9,1.7,4.4,11.9,6.68,7.5,63,10,8,52,NA,47,56,NA,NA
+3718,Chaffin Pond,Windham,1,3.4,NA,5.1,NA,7.2,NA,3,NA,NA,NA,NA,NA,NA,7,11.6,60,NA,NA,NA,NA,47,NA,NA,NA
+3724,Tarkill Pond,Windham,1,1.5,*,1.5,*,1.5,*,1,NA,NA,NA,3.7,3.7,3.7,5.75,10.5,99,NA,NA,NA,NA,NA,NA,NA,NA
+3728,Collins Pond,Windham,1,3.5,NA,4.9,*,6.4,NA,27,8,10,11,2,4,12.2,7.08,24.1,90,13,10,13,NA,49,NA,NA,NA
+3730,LIttle Duck Pond,Windham,1,4.5,*,4.8,*,6.2,*,2,NA,NA,NA,1.4,2.7,6.5,6,2,NA,7,NA,NA,NA,NA,NA,NA,NA
+3732,Dundee Pond,"Gorham, Windham",1,7.2,NA,7.4,NA,7.6,NA,2,9,9,9,1.2,1.6,2,7.07,9.5,68,5,NA,NA,NA,NA,NA,NA,NA
+3734,Highland (Duck) Lake,"Falmouth, Westbrook, Windham",1,1.7,NA,5.4,*,10,NA,44,6,9,11,1,4.3,8.6,6.36,7.9,55,10,6,13,10,46,37,40,48
+3734,Highland (Duck) Lake,"Falmouth, Westbrook, Windham",2,1.9,NA,2.4,NA,2.9,NA,1,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+3786,Runaround (Stone Mill) Pond,Durham,1,2.5,NA,2.5,NA,2.5,NA,1,NA,NA,NA,8.5,8.5,8.5,NA,NA,NA,23,NA,82,NA,NA,NA,NA,NA
+5226,Houghton Pond,Bath,1,2.4,*,3.8,*,4.8,*,8,18,18,18,3.8,3.8,3.8,5.58,1.3,30,11,16,10,NA,69,NA,NA,NA
+5648,Great Pond,Cape Elizabeth,1,1.2,NA,1.4,NA,1.6,NA,4,NA,NA,NA,3.2,5.5,7.9,6.71,8.5,93,33,28,NA,NA,NA,NA,NA,NA
+5780,Long Lake,"Bridgton, Harrison, Naples",1,3.2,NA,6.1,NA,12,NA,43,1,17,40,0.6,2.8,8.7,6.65,8.5,45,7,NA,8,8,38,39,35,38
+5780,Long Lake,"Bridgton, Harrison, Naples",2,3.2,NA,6.1,NA,9.5,NA,41,1,17,42,0.8,2.9,7.6,6.66,8.4,44,7,NA,7,7,38,38,32,31
+5780,Long Lake,"Bridgton, Harrison, Naples",3,3.5,NA,6.5,NA,10.5,NA,42,1,17,40,1,2.8,7.7,6.65,8.2,45,7,NA,7,7,35,38,32,33
+5780,Long Lake,"Bridgton, Harrison, Naples",5,5,NA,5.3,NA,5.5,NA,1,NA,NA,NA,NA,NA,NA,7.5,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+5780,Long Lake,"Bridgton, Harrison, Naples",6,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,6.72,NA,20,NA,6,3,5,NA,NA,NA,NA
+5786,Sebago Lake,"Casco, Naples, Raymond, Sebago, Standish, Windham",1,5.8,NA,9.6,NA,16,NA,33,9,9,9,1.4,1.8,2.1,7.11,6.7,40,4,4,2,NA,21,NA,NA,NA
+5786,Sebago Lake,"Casco, Naples, Raymond, Sebago, Standish, Windham",2,9.5,NA,9.5,NA,9.5,NA,1,NA,NA,NA,NA,NA,NA,6.82,11,20,NA,NA,5,5,NA,NA,NA,NA
+5786,Sebago Lake,"Casco, Naples, Raymond, Sebago, Standish, Windham",3,9,NA,9,NA,9,NA,1,NA,NA,NA,NA,NA,NA,6.78,10,20,NA,4,NA,5,NA,NA,NA,NA
+5786,Sebago Lake,"Casco, Naples, Raymond, Sebago, Standish, Windham",4,8.1,NA,8.1,NA,8.1,NA,1,NA,NA,NA,NA,NA,NA,6.84,NA,20,NA,5,5,6,NA,NA,NA,NA
+5786,Sebago Lake,"Casco, Naples, Raymond, Sebago, Standish, Windham",5,8.9,NA,8.9,NA,8.9,NA,1,NA,NA,NA,NA,NA,NA,6.78,NA,20,NA,7,8,4,NA,NA,NA,NA
+5786,Sebago Lake,"Casco, Naples, Raymond, Sebago, Standish, Windham",6,7.3,NA,9.9,NA,12.2,NA,5,9,9,9,2.2,2.2,2.2,7.06,7.6,35,4,NA,5,5,16,NA,NA,NA
+5786,Sebago Lake,"Casco, Naples, Raymond, Sebago, Standish, Windham",7,5.8,NA,9.1,*,13.4,NA,11,NA,NA,NA,NA,NA,NA,6.94,4.1,32,NA,NA,3,NA,20,NA,NA,NA
+5786,Sebago Lake,"Casco, Naples, Raymond, Sebago, Standish, Windham",8,8,NA,8.8,NA,10.1,NA,3,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,3,NA,NA,NA,NA,NA
+5786,Sebago Lake,"Casco, Naples, Raymond, Sebago, Standish, Windham",9,7.4,NA,8.9,NA,10.5,NA,3,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,4,NA,NA,NA,NA,NA
+5786,Sebago Lake,"Casco, Naples, Raymond, Sebago, Standish, Windham",10,8.6,NA,11.2,NA,14.6,NA,6,7,7,7,1.8,1.8,1.8,7.46,7.8,53,4,NA,3,NA,13,NA,NA,NA
+5786,Sebago Lake,"Casco, Naples, Raymond, Sebago, Standish, Windham",11,5.7,NA,9.1,*,13.8,NA,13,8,9,9,1.6,1.8,1.9,7.36,7.8,48,4,3,NA,NA,19,NA,NA,NA
+5786,Sebago Lake,"Casco, Naples, Raymond, Sebago, Standish, Windham",12,6.5,NA,8.7,NA,10.7,NA,4,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,23,NA,NA,NA
+5786,Sebago Lake,"Casco, Naples, Raymond, Sebago, Standish, Windham",13,6.8,NA,6.8,NA,6.8,NA,1,22,22,22,2.5,2.5,2.5,7.06,6.8,44,3,NA,NA,NA,NA,NA,NA,NA
+5786,Sebago Lake,"Casco, Naples, Raymond, Sebago, Standish, Windham",50,2,NA,2.1,NA,2.1,NA,2,30,34,37,3.3,3.7,4,6.74,8,48,13,17,NA,NA,NA,NA,NA,NA
+9685,Bay of Naples Lake (Brandy Pond),Naples,1,3.7,NA,6.6,*,9,NA,41,1,16,40,0.9,2.5,8.2,6.74,8.5,45,7,NA,11,9,35,36,31,32
+9685,Bay of Naples Lake (Brandy Pond),Naples,2,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,6.57,NA,NA,NA,12,5,5,NA,NA,NA,NA
+9705,North Gorham Pond,"Gorham, Standish, Windham",1,5.7,NA,6.6,NA,6.9,NA,1,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,5,NA,NA,34,NA,NA,NA
