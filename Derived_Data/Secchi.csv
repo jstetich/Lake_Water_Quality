@@ -1,4 +1,4 @@
-MIDAS,Lake,Town,Station,Date,Time,Secchi_Depth,Secchi_On_Bottom_,Scope,Wind_Level,Wind_Direction,Cloud_Cover
+MIDAS,Lake,Town,Station,Date,Time,Secchi_Depth,Secchi_On_Bottom,Scope,Wind_Level,Wind_Direction,Cloud_Cover
 3188,Ingalls (Foster's) Pond,Bridgton,1,1984-05-06T00:00:00Z,1800,7,N,2,4,8,B
 3188,Ingalls (Foster's) Pond,Bridgton,1,1984-05-15T00:00:00Z,NA,NA,NA,NA,NA,NA,NA
 3188,Ingalls (Foster's) Pond,Bridgton,1,1984-05-27T00:00:00Z,1600,6,N,2,3,1,B

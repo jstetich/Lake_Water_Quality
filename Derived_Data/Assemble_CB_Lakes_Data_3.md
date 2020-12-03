@@ -32,12 +32,13 @@ Curtis C. Bohlen, Casco Bay Estuary Partnership
   - [Save Data for Selected Lakes](#save-data-for-selected-lakes)
   - [Cleanup Observational Data](#cleanup-observational-data)
       - [Color ‘AORT’ and ‘Color\_Method’](#color-aort-and-color_method)
-  - [Redundancy in P data and P data “Repeat”
-    Samples](#redundancy-in-p-data-and-p-data-repeat-samples)
+      - [Redundancy in P data and P data “Repeat”
+        Samples](#redundancy-in-p-data-and-p-data-repeat-samples)
       - [Pivot each data set to long
         form](#pivot-each-data-set-to-long-form)
           - [CHLA](#chla)
           - [Phosphorus](#phosphorus)
+          - [pH and related data](#ph-and-related-data)
   - [Write out Sample Data](#write-out-sample-data)
 
 <img
@@ -644,9 +645,10 @@ clean_names <- function(df_names) {
   
   # Remove all other punctuation, and replace with underlines.
   # In case of multiple underlines, replace with just a single underline.
+  # Eliminate underlines that end strings.
   df_names <- gsub('[[:punct:]]', '_', df_names)
   df_names <- gsub('\\_+', '_', df_names)
-  
+  df_names <- gsub('_$', '', df_names)
 
   df_names <- gsub(' ', '_', df_names)
   return(df_names)
@@ -710,9 +712,9 @@ clean_lake_names(clean_names(names(Overall_Means)))
 ```
 
     ##  [1] "MIDAS"             "Lake"              "Town"             
-    ##  [4] "Station"           "Min_Sec"           "Min_Sec_Bottom_"  
-    ##  [7] "Mean_Sec"          "Mean_Sec_Bottom_"  "Max_Sec"          
-    ## [10] "Max_Sec_Bottom_"   "Num_Months_Secchi" "Min_Col"          
+    ##  [4] "Station"           "Min_Sec"           "Min_Sec_Bottom"   
+    ##  [7] "Mean_Sec"          "Mean_Sec_Bottom"   "Max_Sec"          
+    ## [10] "Max_Sec_Bottom"    "Num_Months_Secchi" "Min_Col"          
     ## [13] "Mean_Col"          "Max_Col"           "Min_Chla"         
     ## [16] "Mean_Chla"         "Max_Chla"          "Ph"               
     ## [19] "Alkalinity"        "Conductivity"      "Tphos_Ec"         
@@ -990,7 +992,7 @@ pH <- pH %>%
                                 Color_Method))
 ```
 
-# Redundancy in P data and P data “Repeat” Samples
+## Redundancy in P data and P data “Repeat” Samples
 
 The Phosphorus “Qualifier” data appears to be redundant with the
 ‘Sample\_Type’ data. Let’s check.
@@ -1072,7 +1074,9 @@ Phosphorus <- Phosphorus %>%
          Value = Total_P)
 ```
 
-\#\#\#pH and related data The pH data needs to be reorganized
+### pH and related data
+
+The pH data needs to be reorganized
 
 ``` r
 sample_data <- pH %>%

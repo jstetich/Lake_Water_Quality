@@ -380,9 +380,10 @@ clean_names <- function(df_names) {
   
   # Remove all other punctuation, and replace with underlines.
   # In case of multiple underlines, replace with just a single underline.
+  # Eliminate underlines that end strings.
   df_names <- gsub('[[:punct:]]', '_', df_names)
   df_names <- gsub('\\_+', '_', df_names)
-  
+  df_names <- gsub('_$', '', df_names)
 
   df_names <- gsub(' ', '_', df_names)
   return(df_names)
@@ -618,7 +619,7 @@ pH <- pH %>%
 ```
 
 
-# Redundancy in P data and P data "Repeat" Samples
+## Redundancy in P data and P data "Repeat" Samples
 The Phosphorus "Qualifier" data appears to be redundant with the 'Sample_Type'
 data. Let's  check.
 
@@ -677,7 +678,7 @@ Phosphorus <- Phosphorus %>%
          Value = Total_P)
 ```
 
-###pH and related data
+### pH and related data
 The pH data needs to be reorganized
 
 ```{r}
