@@ -3,6 +3,7 @@ Casco Bay Lakes Water Quality Data Aggregation
 Curtis C. Bohlen, Casco Bay Estuary Partnership
 11/29/2020
 
+  - [Load Libraries](#load-libraries)
   - [Load Data](#load-data)
       - [Folder References](#folder-references)
       - [Lakes Geospatial Information](#lakes-geospatial-information)
@@ -45,7 +46,7 @@ Curtis C. Bohlen, Casco Bay Estuary Partnership
   src="https://www.cascobayestuary.org/wp-content/uploads/2014/04/logo_sm.jpg"
   style="position:absolute;top:10px;right:50px;" />
 
-\#Install Libraries
+# Load Libraries
 
 ``` r
 library(readxl)
@@ -53,14 +54,14 @@ library(readr)
 library(tidyverse)
 ```
 
-    ## -- Attaching packages ---------------------------------------------------------------------------------- tidyverse 1.3.0 --
+    ## -- Attaching packages --------------------------------------- tidyverse 1.3.0 --
 
     ## v ggplot2 3.3.2     v dplyr   1.0.2
     ## v tibble  3.0.3     v stringr 1.4.0
     ## v tidyr   1.1.2     v forcats 0.5.0
     ## v purrr   0.3.4
 
-    ## -- Conflicts ------------------------------------------------------------------------------------- tidyverse_conflicts() --
+    ## -- Conflicts ------------------------------------------ tidyverse_conflicts() --
     ## x dplyr::filter() masks stats::filter()
     ## x dplyr::lag()    masks stats::lag()
 

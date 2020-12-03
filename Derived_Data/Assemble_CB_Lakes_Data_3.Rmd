@@ -14,7 +14,7 @@ output:
   style="position:absolute;top:10px;right:50px;" />
 
 
-#Install Libraries
+# Load Libraries
 ```{r}
 library(readxl)
 library(readr)
@@ -159,6 +159,7 @@ Only a few, and none that matter for our analysis.
 ```{r}
 CB_Lakes[! CB_Lakes$MIDAS %in% morpho_data$MIDAS,]
 ```
+
 ```{r}
 Maine_Lakes$Lake[! Maine_Lakes$MIDAS %in% morpho_data$MIDAS]
 ```
