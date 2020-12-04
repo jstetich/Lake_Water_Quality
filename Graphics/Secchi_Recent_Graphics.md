@@ -24,6 +24,7 @@ Curtis C. Bohlen, Casco Bay Estuary Partnership
     Graphically](#showing-relationships-graphically)
       - [Water Clarity and Mean Depth](#water-clarity-and-mean-depth)
           - [Linear Regression](#linear-regression)
+          - [Related Plot](#related-plot)
       - [Secchi by Location (and Depth)](#secchi-by-location-and-depth)
 
 <img
@@ -414,13 +415,14 @@ morphometric variables.
 ``` r
 tmp <- morpho.data %>%
   filter(MIDAS %in% RecentLakesMIDAS) %>%
-  mutate(WS_Ratio = TDrain_ha/(Area_sq_m/10000)) %>%
-  mutate(Median = recent_lake$Median[match(MIDAS, recent_lake$MIDAS)]) %>%
+  mutate(WS_Ratio = TDrain_ha/(Area_sq_m/10000),
+         Median   = recent_lake$Median[match(MIDAS, recent_lake$MIDAS)],
+         Samples  = recent_lake$N[match(MIDAS, recent_lake$MIDAS)]) %>%
   select(where(is.numeric)) %>%
 rename(Easting = UTM_X,
        Northing = UTM_Y)
 
-cat('Pearson')
+cat('Pearson\n')
 ```
 
     ## Pearson
@@ -435,7 +437,7 @@ cor(tmp$Median, tmp[,2:12], use = 'pairwise')
     ## [1,] 0.2870965 0.3162291 0.5788747 0.4888161 0.2623607
 
 ``` r
-cat('\n\nSpearman')
+cat('\n\nSpearman\n')
 ```
 
     ## 
@@ -452,7 +454,7 @@ cor(tmp$Median, tmp[,2:12], use = 'pairwise', method='spearman')
     ## [1,] 0.5050104 0.7066025 0.6213781 0.5715941
 
 ``` r
-cat('\n\nKendall')
+cat('\n\nKendall\n')
 ```
 
     ## 
@@ -482,12 +484,12 @@ Basically, that shows:
 ``` r
 tmp2 <- tmp %>% select(Area_sq_m, Perim_km,
                        D_Mean_m, D_Max_m,
-                       Flushes_p_yr, Median)%>%
+                       Flushes_p_yr, Median, Samples)%>%
   rename(Secchi = Median) %>%
   rename_at(1:5, ~ c('A', 'P', 'DAvg', 'DMax', 'Flushing Rate'))
 
 tmp3 <- tmp2 %>% 
-  pivot_longer(-Secchi, names_to = "Type", values_to = "Value" ) %>%
+  pivot_longer(-c(Secchi, Samples), names_to = "Type", values_to = "Value" ) %>%
   mutate(Type = factor(Type, levels = c('A', 'P',
                                           'DAvg', 'DMax',
                                           'Flushing Rate')))
@@ -520,8 +522,8 @@ pretty good, with the two measures of depth the best fit.
 ### Linear Regression
 
 ``` r
-the.lm <- lm(Secchi~ DAvg, data = tmp2)
-summary(the.lm)
+the_lm <- lm(Secchi~ DAvg, data = tmp2)
+summary(the_lm)
 ```
 
     ## 
@@ -545,7 +547,7 @@ summary(the.lm)
     ## F-statistic: 17.14 on 1 and 34 DF,  p-value: 0.0002167
 
 ``` r
-anova(the.lm)
+anova(the_lm)
 ```
 
     ## Analysis of Variance Table
@@ -557,19 +559,181 @@ anova(the.lm)
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
-So, we have a highly significant regression relationship. \#\#\# Related
-Plot
+``` r
+oldpar <- par(mfrow = c(2,2))
+plot(the_lm)
+```
+
+![](Secchi_Recent_Graphics_files/figure-gfm/unnamed-chunk-18-1.png)<!-- -->
+
+``` r
+par(oldpar)
+```
+
+Lake 36, Sebago Lake, is a outlier, high leverage, and high Cook’s
+Distance. This is not an especially good model.
+
+``` r
+the_log_lm <- lm(Secchi~ log(DAvg), data = tmp2)
+summary(the_log_lm)
+```
+
+    ## 
+    ## Call:
+    ## lm(formula = Secchi ~ log(DAvg), data = tmp2)
+    ## 
+    ## Residuals:
+    ##      Min       1Q   Median       3Q      Max 
+    ## -1.78737 -0.77170 -0.03651  0.78762  2.55949 
+    ## 
+    ## Coefficients:
+    ##             Estimate Std. Error t value Pr(>|t|)    
+    ## (Intercept)   2.6317     0.5055   5.206 9.28e-06 ***
+    ## log(DAvg)     1.9930     0.2831   7.039 3.99e-08 ***
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Residual standard error: 0.9904 on 34 degrees of freedom
+    ##   (1 observation deleted due to missingness)
+    ## Multiple R-squared:  0.593,  Adjusted R-squared:  0.5811 
+    ## F-statistic: 49.54 on 1 and 34 DF,  p-value: 3.991e-08
+
+``` r
+anova(the_log_lm)
+```
+
+    ## Analysis of Variance Table
+    ## 
+    ## Response: Secchi
+    ##           Df Sum Sq Mean Sq F value    Pr(>F)    
+    ## log(DAvg)  1 48.597  48.597  49.545 3.991e-08 ***
+    ## Residuals 34 33.349   0.981                      
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+``` r
+oldpar <- par(mfrow = c(2,2))
+plot(the_log_lm)
+```
+
+![](Secchi_Recent_Graphics_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
+
+``` r
+par(oldpar)
+```
+
+Sebago is still somewhat of an outlier, but Cook’s Distance is under
+0.5, and leverage is half as large, so this is a more reasonable model.
+The model fits the smaller lakes substantially better.
+
+``` r
+weighted_log_lm <- lm(Secchi~ log(DAvg), weights = sqrt(Samples), data = tmp2)
+summary(weighted_log_lm)
+```
+
+    ## 
+    ## Call:
+    ## lm(formula = Secchi ~ log(DAvg), data = tmp2, weights = sqrt(Samples))
+    ## 
+    ## Weighted Residuals:
+    ##     Min      1Q  Median      3Q     Max 
+    ## -6.1464 -1.8292 -0.2007  1.8998  9.4090 
+    ## 
+    ## Coefficients:
+    ##             Estimate Std. Error t value Pr(>|t|)    
+    ## (Intercept)   3.0521     0.6657   4.585 5.89e-05 ***
+    ## log(DAvg)     1.7515     0.3637   4.816 2.97e-05 ***
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Residual standard error: 3.239 on 34 degrees of freedom
+    ##   (1 observation deleted due to missingness)
+    ## Multiple R-squared:  0.4055, Adjusted R-squared:  0.388 
+    ## F-statistic: 23.19 on 1 and 34 DF,  p-value: 2.971e-05
+
+``` r
+anova(weighted_log_lm)
+```
+
+    ## Analysis of Variance Table
+    ## 
+    ## Response: Secchi
+    ##           Df Sum Sq Mean Sq F value    Pr(>F)    
+    ## log(DAvg)  1 243.36 243.356  23.194 2.971e-05 ***
+    ## Residuals 34 356.74  10.492                      
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+``` r
+oldpar <- par(mfrow = c(2,2))
+plot(weighted_log_lm)
+```
+
+![](Secchi_Recent_Graphics_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
+
+``` r
+par(oldpar)
+```
+
+One can make a justification for a weighted model, here, since sample
+sizes vary significantly. A weighted model brings the regression line
+closer to Sebago because of its large sample size. Sebago no longer
+appears as an outlier, although it still has the highest leverage of any
+lake.
+
+We have a highly significant regression relationship, regardless of
+model. The weighted log analysis does the best job addressing Sebago
+Lake, but the different fits provide similar predictions.
+
+We can compare predictions for the two log regressions as follows:
+
+``` r
+df <- tibble(DAvg = 1:32)
+df <- df %>%
+  mutate(pred_log = predict(the_log_lm, newdata = df),
+         pred_weight = predict(weighted_log_lm, newdata = df))
+
+ggplot(tmp, aes(D_Mean_m, Median)) +
+  geom_point(size=3, color = cbep_colors()[1]) +
+  geom_line(aes(DAvg, pred_log), data = df, color = 'green') +
+  geom_line(aes(DAvg, pred_weight), data = df, color = 'blue') +
+
+  xlab('Lake Average Depth (m)\n(log scale)') +
+  ylab('Median Secchi Depth (m)')  +
+  theme_cbep(base_size = 12) +
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) +
+  scale_y_continuous(limits=c(0,10), breaks = c(0,5,10)) +
+  scale_x_log10()
+```
+
+    ## Warning: Removed 1 rows containing missing values (geom_point).
+
+![](Secchi_Recent_Graphics_files/figure-gfm/unnamed-chunk-23-1.png)<!-- -->
+
+``` r
+rm(df)
+```
+
+From a practical point of view, the two similar, and, for the State of
+Casco Bay audience, the meaning of a graphic based on these two similar
+regressions would be effectively indistinguishable. Using the weighted
+regression would require more explanation, without changing meaning. In
+the interest of parsimony, we chose to chose to present the unweighted
+model.
+
+### Related Plot
 
 ``` r
 plt <- ggplot(tmp, aes(D_Mean_m, Median)) +
   geom_point(size=3, color = cbep_colors()[1]) +
   geom_smooth(method = 'lm', se = FALSE, color = cbep_colors()[1]) +
-  scale_x_log10() + #limits = c( 2,40), breaks = c(2,4, 10,20,40)) + 
-  xlab('Lake Average Depth (m)') +
+
+  xlab('Lake Average Depth (m)\n(log scale)') +
   ylab('Median Secchi Depth (m)')  +
   theme_cbep(base_size = 12) +
   theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) +
-  scale_y_continuous(limits=c(0,10), breaks = c(0,5,10))
+  scale_y_continuous(limits=c(0,10), breaks = c(0,5,10)) +
+  scale_x_log10()
 plt
 ```
 
@@ -579,7 +743,7 @@ plt
 
     ## Warning: Removed 1 rows containing missing values (geom_point).
 
-![](Secchi_Recent_Graphics_files/figure-gfm/unnamed-chunk-18-1.png)<!-- -->
+![](Secchi_Recent_Graphics_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
 
 ``` r
 ggsave('figures/current_secchi_by_depth.pdf', device = cairo_pdf,
@@ -611,4 +775,4 @@ plt
 
     ## Warning: Removed 1 rows containing missing values (geom_point).
 
-![](Secchi_Recent_Graphics_files/figure-gfm/unnamed-chunk-19-1.png)<!-- -->
+![](Secchi_Recent_Graphics_files/figure-gfm/unnamed-chunk-25-1.png)<!-- -->
