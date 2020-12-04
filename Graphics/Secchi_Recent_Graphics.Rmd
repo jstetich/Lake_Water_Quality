@@ -161,33 +161,25 @@ secchi_data %>%
 ggsave('figures/current_secchi_data_availability.pdf', device = cairo_pdf, width = 7, height = 8)
 ```
 
-```{r}
-
-```
-
 Most ponds have reasonable sampling histories over the last ten years.
 Only Runaround Pond, Hutchins Pond, and Dundee Pond  and 
 North Gorham Pond do not.
 
 ### List Ponds with Enough Data
-The 'nsamplesrecent' and 'nsamplesall' are equal here because we already
-filtered to data since 2008.  But similar code also works for identifying data
-for trend analysis, so we keep it here.
 ```{r}
 RecentLakesMIDAS <- secchi_data %>%
+  filter(Year > 2008) %>%
   group_by(MIDAS, Year) %>%
   summarize(Lake = first(Lake),
             Sampled = sum(! is.na(Secchi_Depth)),
             .groups = 'drop_last') %>%
   summarize(Lake = first(Lake),
-            nsamplesall = sum(Sampled),
-            nsamplesrecent = sum(Sampled[Year > 2008], na.rm=TRUE),
-            nyearsall = sum(Sampled[Year>2008] > 0),
-            nyearsrecent = sum(Sampled[Year>2008] > 0),
+            nsamples = sum(Sampled),
+            nyears = sum(Sampled > 0),
             .groups = 'drop_last') %>%
-  filter(nsamplesall > 4,
-         nyearsall > 4 ) %>%
-  arrange(-nsamplesall) %>%
+  filter(nsamples > 4,
+         nyears > 4 ) %>%
+  arrange(-nsamples) %>%
   pull(MIDAS)
 ```
 

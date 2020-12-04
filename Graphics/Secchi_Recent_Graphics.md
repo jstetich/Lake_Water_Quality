@@ -37,14 +37,14 @@ Curtis C. Bohlen, Casco Bay Estuary Partnership
 library(tidyverse)
 ```
 
-    ## -- Attaching packages --------------------------------------- tidyverse 1.3.0 --
+    ## -- Attaching packages ---------------------------------------------------------------------------------- tidyverse 1.3.0 --
 
     ## v ggplot2 3.3.2     v purrr   0.3.4
     ## v tibble  3.0.3     v dplyr   1.0.2
     ## v tidyr   1.1.2     v stringr 1.4.0
     ## v readr   1.3.1     v forcats 0.5.0
 
-    ## -- Conflicts ------------------------------------------ tidyverse_conflicts() --
+    ## -- Conflicts ------------------------------------------------------------------------------------- tidyverse_conflicts() --
     ## x dplyr::filter() masks stats::filter()
     ## x dplyr::lag()    masks stats::lag()
 
@@ -267,25 +267,20 @@ Pond do not.
 
 ### List Ponds with Enough Data
 
-The ‘nsamplesrecent’ and ‘nsamplesall’ are equal here because we already
-filtered to data since 2008. But similar code also works for identifying
-data for trend analysis, so we keep it here.
-
 ``` r
 RecentLakesMIDAS <- secchi_data %>%
+  filter(Year > 2008) %>%
   group_by(MIDAS, Year) %>%
   summarize(Lake = first(Lake),
             Sampled = sum(! is.na(Secchi_Depth)),
             .groups = 'drop_last') %>%
   summarize(Lake = first(Lake),
-            nsamplesall = sum(Sampled),
-            nsamplesrecent = sum(Sampled[Year > 2008], na.rm=TRUE),
-            nyearsall = sum(Sampled[Year>2008] > 0),
-            nyearsrecent = sum(Sampled[Year>2008] > 0),
+            nsamples = sum(Sampled),
+            nyears = sum(Sampled > 0),
             .groups = 'drop_last') %>%
-  filter(nsamplesall > 4,
-         nyearsall > 4 ) %>%
-  arrange(-nsamplesall) %>%
+  filter(nsamples > 4,
+         nyears > 4 ) %>%
+  arrange(-nsamples) %>%
   pull(MIDAS)
 ```
 
@@ -371,7 +366,7 @@ plt <- secchi_data %>%
 plt
 ```
 
-![](Secchi_Recent_Graphics_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
+![](Secchi_Recent_Graphics_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
 
 ``` r
 ggsave('figures/current_secchi_bar.pdf', device = cairo_pdf,
@@ -400,7 +395,7 @@ plt <- secchi_data %>%
 plt
 ```
 
-![](Secchi_Recent_Graphics_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
+![](Secchi_Recent_Graphics_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
 
 ``` r
 ggsave('figures/current_secchi_violin.pdf', device = cairo_pdf,
@@ -508,7 +503,7 @@ plt
 
     ## Warning: Removed 3 rows containing missing values (geom_point).
 
-![](Secchi_Recent_Graphics_files/figure-gfm/unnamed-chunk-16-1.png)<!-- -->
+![](Secchi_Recent_Graphics_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
 
 ``` r
   rm(tmp3)
@@ -564,7 +559,7 @@ oldpar <- par(mfrow = c(2,2))
 plot(the_lm)
 ```
 
-![](Secchi_Recent_Graphics_files/figure-gfm/unnamed-chunk-18-1.png)<!-- -->
+![](Secchi_Recent_Graphics_files/figure-gfm/unnamed-chunk-17-1.png)<!-- -->
 
 ``` r
 par(oldpar)
@@ -616,7 +611,7 @@ oldpar <- par(mfrow = c(2,2))
 plot(the_log_lm)
 ```
 
-![](Secchi_Recent_Graphics_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
+![](Secchi_Recent_Graphics_files/figure-gfm/unnamed-chunk-19-1.png)<!-- -->
 
 ``` r
 par(oldpar)
@@ -669,7 +664,7 @@ oldpar <- par(mfrow = c(2,2))
 plot(weighted_log_lm)
 ```
 
-![](Secchi_Recent_Graphics_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
+![](Secchi_Recent_Graphics_files/figure-gfm/unnamed-chunk-21-1.png)<!-- -->
 
 ``` r
 par(oldpar)
@@ -708,7 +703,7 @@ ggplot(tmp, aes(D_Mean_m, Median)) +
 
     ## Warning: Removed 1 rows containing missing values (geom_point).
 
-![](Secchi_Recent_Graphics_files/figure-gfm/unnamed-chunk-23-1.png)<!-- -->
+![](Secchi_Recent_Graphics_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
 
 ``` r
 rm(df)
@@ -743,7 +738,7 @@ plt
 
     ## Warning: Removed 1 rows containing missing values (geom_point).
 
-![](Secchi_Recent_Graphics_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
+![](Secchi_Recent_Graphics_files/figure-gfm/unnamed-chunk-23-1.png)<!-- -->
 
 ``` r
 ggsave('figures/current_secchi_by_depth.pdf', device = cairo_pdf,
@@ -775,4 +770,4 @@ plt
 
     ## Warning: Removed 1 rows containing missing values (geom_point).
 
-![](Secchi_Recent_Graphics_files/figure-gfm/unnamed-chunk-25-1.png)<!-- -->
+![](Secchi_Recent_Graphics_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
