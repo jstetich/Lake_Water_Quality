@@ -1,0 +1,592 @@
+---
+title: "Analysis of Lakes Secchi Depth Trends"
+author:  "Curtis C. Bohlen, Casco Bay Estuary Partnership"
+date: "11/19/2020"
+output:
+  github_document:
+    toc: true
+    fig_width: 7
+    fig_height: 5
+---
+
+<img
+  src="https://www.cascobayestuary.org/wp-content/uploads/2014/04/logo_sm.jpg"
+  style="position:absolute;top:10px;right:50px;" />
+
+# Load Libraries
+```{r}
+library(tidyverse)
+library(readxl)
+library(mblm)
+
+library(CBEPgraphics)
+load_cbep_fonts()
+theme_set(theme_cbep())
+```
+
+# Load Data
+Here we read in the data, do a lot of renaming, and convert some to factors, and
+finally, add a Year term.  Note the filter removing NAs is because one lake is
+included in these data but has no actual data -- only NAs for the Secchi Depth.
+
+## Folder References
+```{r}
+sibfldnm <- 'Derived_Data'
+parent <- dirname(getwd())
+sibling <- file.path(parent,sibfldnm)
+fn <- 'Secchi.csv'
+
+
+dir.create(file.path(getwd(), 'figures'), showWarnings = FALSE)
+```
+
+## Read Secchi Data
+```{r}
+secchi_data <- read_csv(file.path(sibling, fn))
+```
+
+Eight of nine parsing errors are for Scope == "N", Songo pond, (MIDAS = 3262),
+for every observation in 2011.  We decided that "N" here probably meant no scope
+was used, so Scope == 1 (or, Scope = "None", after conversion to factor) is 
+appropriate.  We wil fix that after we add a "Year" value to the data.
+
+The ninth parsing error was for an observation from Woods Pond, in June of 1997,
+where scope was recorded as "L". Surrounding values had Scope == 2 and
+Scope == 5, so we leave that value as missing.
+
+### Data Cleanup
+Here we convert some values to factors, and add Year and month terms.
+
+*  The "Scope" data contains a sixth value Scope == 6, that is not 
+   referenced in the source Metadata.  We declare it as "Undefined", pending
+   clarification from DEP of the lakes monitoring community.  If we need this
+   information, it may be defined in the Maine Volunteer Lakes Monitoring QAPP
+   ore related SOPs.  A quick search of online documents found the QAPP, but
+   not the SOPs.
+
+*  We filter out NAs is because one lake is included in the data but has
+   no actual Secchi data, and it prevents the lake from being carried forward.
+   
+*  We convert the Lake name to a factor, ordered by median Secchi Depth.
+
+*  Coding for the "Secchi_on_Bottom" flag is inconsistent, with four possible
+   codes: "Y", "B", "N", and "".  We interpret the first two as evidence that 
+   the Secchi Disk was on the bottom, "N" as evidence that it was not, and "" as 
+   a missing value.
+```{r}
+
+secchi_data <- secchi_data %>%
+  rename(CensoredFlag = Secchi_On_Bottom) %>%
+  mutate(CensoredFlag = fct_recode(CensoredFlag, 'Y'='B')) %>%
+  mutate(CensoredFlag = CensoredFlag == 'Y') %>%
+           
+  mutate(Scope = factor(Scope, levels = as.character(1:6),
+                        labels = c('None', 'Plain', 'Slant',
+                                   'Slant with Mask', 'Flat with Mask',
+                                   'Undefined'))) %>%
+  rename(Wind_mph = Wind_Level) %>%
+  rename(WindDir = Wind_Direction ) %>%
+  mutate(WindDir = factor (WindDir, levels = 1:8,
+                           labels = c('N', 'NE', 'E', 'SE',
+                                      'S', 'Sw', 'W', 'NW'))) %>%
+  rename(CloudCover = Cloud_Cover) %>%
+  mutate(CloudCover = factor (CloudCover, levels = c('B', 'C', 'O'),
+                              labels = c('Clear', 'Cloudy Bright',
+                                         'Heavy Overcast'))) %>%
+ 
+  mutate(Year = as.numeric(format(Date, format = '%Y'))) %>%
+  mutate(Month = as.numeric(format(Date, format = '%m'))) %>%
+  mutate(Month = factor(Month, levels = 1:12, labels = month.abb)) %>%
+  
+  mutate(Lake = fct_reorder(factor(Lake), Secchi_Depth)) %>%
+  
+  filter( ! is.na(Secchi_Depth)) 
+
+  # Correct Parsing Errors
+  secchi_data$Scope[secchi_data$MIDAS == 3262 &
+                      secchi_data$Year == 2011] <- 'None'
+```
+
+## Read Morphometric Data
+```{r}
+fn <- 'Lake_Morphometry_Metric.csv'
+morpho.data <- read_csv(file.path(sibling, fn))
+
+```
+
+## Read Morphometric Data
+Read in morphometric data, and filter to lakes for which we have at least some
+Secchi data.
+
+```{r}
+fn <- 'Lake_Morphometry_Metric.csv'
+morpho.data <- read_csv(file.path(sibling, fn))
+```
+
+# Problems at Sebago Lake Results
+```{r}
+secchi_data %>%
+  filter(MIDAS == 5786) %>%
+  ggplot(aes(Year, Secchi_Depth, color = factor(Station))) +
+  geom_jitter(height = 0, width = 0.1)
+```
+This points to several problems:
+1.  Sebago Lake has been one of the most consistently sampled lakes, under a
+long-running program managed by the Portland Water District.  Yet  we have
+major gaps in the recent record.  This probably reflects changes in how data has
+been reported to DEP.  
+2.  The extreme low values in 2017 and 2018 correspond to the only two samples
+from a new station.  Any recent trend is due to addition of this anomolous new source
+of data.  
+
+# Lakes With Sufficient Data
+## Graphic of Data by Year
+```{r fig.height = 7, fig.width = 8}
+secchi_data %>%
+  group_by(MIDAS, Year) %>%
+  summarize(Lake = first(Lake),
+            Sampled = sum(! is.na(Secchi_Depth)),
+            .groups = 'drop_last') %>%
+ #mutate(MIDAS2 = fct_reorder(factor(MIDAS), Sampled, sum)) %>%
+  ggplot(aes(x = Year, y= fct_reorder(Lake, Sampled, sum), fill = log(Sampled,2))) +
+  geom_raster() +
+  theme_cbep(base_size = 12) +
+  theme(axis.text.x = element_text(angle = 90, vjust = .5)) +
+  scale_fill_gradient(breaks = c(0, 1, 2, 3, 4, 5),
+                          labels = c(1, 2, 4, 4, 16, 32),
+                          name = 'Samples',
+                          high = "#132B43",
+                          low = "#56B1F7") +
+  scale_x_continuous() +
+  ylab('') +
+  xlab('') +
+  ggtitle('Secchi Depth Data')
+
+# ggsave('figures/current_secchi_data_availability.pdf', device = cairo_pdf,
+#         width = 7, height = 8)
+```
+
+# Analysis
+We could use four distinct strategies for analysis here:
+(1) Application of linear models and Thiel-Sen estimators lake by lake
+(2) Analysis of medians for each lake, using ordinary least squares
+(3) Analysis of medians for each lake, using weighted least squares to account
+for changes in sample size
+(4) Multi-level linear models
+
+But for our purposes, the interest is on properties of individual 
+
+##  Basic Lake Info
+```{r}
+preresults <- secchi_data %>%
+  arrange(MIDAS) %>%
+  group_by(MIDAS) %>%
+  summarize (
+    Samples = n(),
+	  Stations = length(levels(factor(Station))),
+    Years = length(levels(factor(Year))),
+    FirstYear = min(Year),
+  	LastYear = max(Year),
+    Mean = mean(Secchi_Depth, na.rm=TRUE),
+    Median = median(Secchi_Depth, na.rm=TRUE),
+    .groups = 'drop') %>%
+  mutate(Lake = morpho.data$Lake[match(MIDAS,morpho.data$MIDAS)])
+```
+
+## Trends
+The following is based on code originally used in preparing the 2015 State of
+the Bay Report. The use of a for loop makes this  rather inefficient.
+A more modern approach would use tidyverse approach using nested tibbles.
+
+In the following we calculate both Thiel-Sen and linear model slopes.
+The Thiel-Sen estimator (actually the modification of that estimator due to
+Siegel, according to the help files) is resistant to outliers and other
+violations of the assumption of normality.  It is thus better suited to this
+(unsupervised) application.  We calculated linear model slopes to show that the
+qualitative results of my analysis are largely insensitive to the details of the
+analysis used, but we will report resukts of the Theil-Sen analysis.
+
+Significance of the Thiel-Sel slopes is based either on the Wilcoxon Test used
+in the default `summary.mblm()` function, or on on Kendall's Tau.  Kendall's Tau
+which is conceptually more closely related to the Thiel-Sen estimator.
+It effectively tests for a monotonic relationship (corelation between orderings) between two series.
+
+Some comments: This analysis ignores seasonal patterns and many possible
+covariates and confounding variables.  It also ignores the fact that
+we have right censored data, which is one more reason to prefer Kendall's Tau 
+to the linear model.
+
+## Select Lakes With Sufficient Data
+We want to select only those lakes with a "reasonable" amount of data for
+analyzing trends, both short-term and long-term.
+
+We could soften these constraints using mixed models, but that appears both statistically unwise and potentially difficult to explain to our audience.
+
+### Long Term
+```{r}
+TrendLakesMIDAS <- secchi_data %>%
+  group_by(MIDAS, Year) %>%
+  summarize(Lake = first(Lake),
+            Sampled = sum(! is.na(Secchi_Depth)),
+            .groups = 'drop_last') %>%
+  summarize(Lake = first(Lake),
+            nsamples = sum(Sampled),
+            nyears = sum(! is.na(Year)),
+            nyearsrecent = sum(Sampled[Year>2008] > 0),
+            .groups = 'drop_last') %>%
+
+  filter(nyears > 9,
+         nyearsrecent > 4 ) %>%
+  arrange(MIDAS) %>%
+  pull(MIDAS)
+
+lt_results <- preresults %>%
+    filter(MIDAS %in% TrendLakesMIDAS)
+```
+
+### Short Term
+```{r}
+RecentLakesMIDAS <- secchi_data %>%
+  filter(Year > 2008) %>%
+  group_by(MIDAS, Year) %>%
+  summarize(Lake = first(Lake),
+            Sampled = sum(! is.na(Secchi_Depth)),
+            .groups = 'drop_last') %>%
+  summarize(Lake = first(Lake),
+            nsamples = sum(Sampled),
+            nyears = sum(! is.na(Year)),
+            nyearsrecent = sum(Sampled[Year>2008] > 0),
+            .groups = 'drop_last') %>%
+  filter(nsamples > 4,
+         nyears > 4 ) %>%
+  arrange(MIDAS) %>%
+  pull(MIDAS)
+
+st_results <- preresults %>%
+    filter(MIDAS %in% RecentLakesMIDAS)
+```
+
+## Results
+### Long Term
+We calculate lake by lake linear model slopes and Theil-Sen slopes and P VaLues.
+We could also run these models using the nested dataframes approach used
+for loking at metals in out Toxics data, but this "for loop" aproach works
+(although inefficiently).  
+
+```{r}
+MIDASES    <- vector(mode = 'numeric', length = 0)
+Slopes     <- vector(mode = 'numeric', length = 0)
+PValues    <- vector(mode = 'numeric', length = 0)
+TSPValues  <- vector(mode = 'numeric', length = 0)
+TSSlopes   <- vector(mode = "numeric", length = 0)
+TSPValues  <- vector(mode = "numeric", length = 0)
+TSKPValues <- vector(mode = "numeric", length = 0)
+
+# This code is inefficient, since it copies vectors repeatedly on copy.
+# but this code works no matter how many la
+ for (MIDAS in TrendLakesMIDAS) {
+   #print(MIDAS)
+
+   thisdata <- secchi_data[secchi_data$MIDAS == MIDAS,]
+   
+   MIDASES <- append(MIDASES, MIDAS)
+   
+   LMtest = lm(Secchi_Depth ~ Year, data = thisdata)
+   
+   Slope = LMtest$coef[2]
+   Slopes <- append(Slopes, Slope)
+   
+   PValue = anova(LMtest)[1,5]
+   PValues <- append(PValues, PValue)
+   
+   tryCatch(TStest <- mblm(Secchi_Depth ~ Year, dataframe = thisdata),
+            error = function(err) cat(err, '\n','FAILED:  ', MIDAS, '\n'))
+   
+   tryCatch( {
+       TSSlope    <- TStest$coef[2]
+       TSSlopes   <- append(TSSlopes, TSSlope)
+       },
+       error = function(err) {cat('TSSlopes\n')
+                              print(err)})
+   
+   tryCatch( {
+     TSPValue   <- summary(TStest)$coefficients[2,4]
+     TSPValues  <- append(TSPValues, TSPValue)
+     },
+     error = function(err) {cat('TSPvalues\n')
+                              print(err)})    
+   tryCatch({  
+     TSKPValue  <- cor.test(thisdata$Secchi_Depth,thisdata$Year)$p.value
+     TSKPValues <- append(TSKPValues, TSKPValue)
+     },
+     error = function(err) {cat('TSKPValues\n')
+                              print(err)})
+}
+```
+
+As planned, results line up, so we can bind columns together to create a final
+dataset.
+```{r}
+any( ! lt_results$MIDAS ==  MIDASES)
+```
+
+```{r}
+more <- tibble(Slope = Slopes,
+               PValue = PValues, 
+               TSSlope = TSSlopes,
+               TSPValue = TSPValues,
+               TSKPValue = TSKPValues)
+lt_results <- lt_results %>%
+  bind_cols(more)
+rm(more, Slopes, PValues, TSSlopes, TSPValues, TSKPValues)
+
+```
+
+####  Extracting Results
+We filter out near-zero slopes (< 0.005m per year, or ~ 5 cm per decade) as
+meaningless.  We would not normally do that, but the Thiel-Sen analysis produces
+couple of lakes with slopes exactly equal to zero, which nevertheless have
+statistically significant trends by Kendall's tau.
+
+```{r}
+lt_results <- lt_results %>%
+  mutate(lm_sig = PValue<=0.05 & ! abs(Slope) < 0.005,
+         lm_category = ifelse(lm_sig ,
+                              if_else(Slope < 0, 'Declining', 'Increasing'),
+                              'No Change'),
+         TS_sig = TSKPValue<=0.05  & ! abs(TSSlope) < 0.005,
+         TS_category = ifelse(TS_sig ,
+                              if_else(TSSlope < 0, 'Declining', 'Increasing'),
+                              'No Change')) %>%
+  select(-lm_sig, -TS_sig)
+```
+
+
+### Test: Comparison of Linear and Thiel-Sen Estimator Slopes
+There is a high correlation between the two slope estimators, as one might expect.
+```{r}
+cor(lt_results$Slope, lt_results$TSSlope)
+```
+```{r}
+plt <-  ggplot(lt_results, aes(Slope, TSSlope))  +
+  geom_hline(yintercept = 0, lty = 3) +
+  geom_vline(xintercept = 0, lty = 3) +
+  geom_abline(intercept = 0, slope = 1, lty = 3) +
+  #geom_point(aes(color = Median), size = 5, alpha = 0.5) +
+  geom_text(aes(label = MIDAS), size = 3) + 
+
+  geom_smooth(method = 'lm', se = FALSE)
+plt
+```
+So results are similar either way.  The TS Slope tends to be slightly lower
+than the linear model slope.  The two lakes, `MIDAS == 3420` and
+`MIDAS = 3448` show statistically significant improving trends by linear model,
+but not by Theil-Sen estimators.
+
+### Short-term
+```{r}
+MIDASES    <- vector(mode = 'numeric', length = 0)
+Slopes     <- vector(mode = 'numeric', length = 0)
+PValues    <- vector(mode = 'numeric', length = 0)
+TSPValues  <- vector(mode = 'numeric', length = 0)
+TSSlopes   <- vector(mode = "numeric", length = 0)
+TSPValues  <- vector(mode = "numeric", length = 0)
+TSKPValues <- vector(mode = "numeric", length = 0)
+
+recent_data <- secchi_data %>%
+  filter(Year > 2008)
+
+# This code is inefficient, since it copies vectors repeatedly on modify.
+
+ for (MIDAS in RecentLakesMIDAS) {
+   #print(MIDAS)
+
+   thisdata <- recent_data[recent_data$MIDAS == MIDAS,]
+   
+   MIDASES <- append(MIDASES, MIDAS)
+   
+   LMtest = lm(Secchi_Depth ~ Year, data = thisdata)
+   
+   Slope = LMtest$coef[2]
+   Slopes <- append(Slopes, Slope)
+   
+   PValue = anova(LMtest)[1,5]
+   PValues <- append(PValues, PValue)
+  
+   tryCatch(TStest <- mblm(Secchi_Depth ~ Year, dataframe = thisdata),
+            error = function(err) cat(err, '\n','FAILED:  ', MIDAS, '\n'))
+  
+   tryCatch( {
+       TSSlope    <- TStest$coef[2]
+       TSSlopes   <- append(TSSlopes, TSSlope)
+       },
+       error = function(err) {cat('TSSlopes\n')
+                              print(err)})
+   
+   tryCatch( {
+     TSPValue   <- summary(TStest)$coefficients[2,4]
+     TSPValues  <- append(TSPValues, TSPValue)
+     },
+     error = function(err) {cat('TSPvalues\n')
+                              print(err)})    
+   tryCatch({  
+     TSKPValue  <- cor.test(thisdata$Secchi_Depth,thisdata$Year)$p.value
+     TSKPValues <- append(TSKPValues, TSKPValue)
+     },
+     error = function(err) {cat('TSKPValues\n')
+                              print(err)})
+}
+```
+
+As planned, results should line up, so we can bind columns together to create a
+final dataset.
+```{r}
+any( ! st_results$MIDAS ==  MIDASES)
+```
+
+```{r}
+more <- tibble(Slope = Slopes,
+               PValue = PValues, 
+               TSSlope = TSSlopes,
+               TSPValue = TSPValues,
+               TSKPValue = TSKPValues)
+st_results <- st_results %>%
+  bind_cols(more)
+rm(more, Slopes, PValues, TSSlopes, TSPValues, TSKPValues)
+
+
+```
+
+### Comparison of Linear and Thiel-Sen Estimator Slopes
+There is only moderate correlation between the two slope estimators.
+```{r}
+cor(st_results$Slope, st_results$TSSlope)
+```
+```{r}
+plt <-  ggplot(st_results, aes(Slope, TSSlope))  +
+   geom_hline(yintercept = 0, lty = 3) +
+   geom_vline(xintercept = 0, lty = 3) +
+   geom_abline(intercept = 0, slope = 1, lty = 3) +
+   #geom_point(aes(color = Median), size = 5, alpha = 0.5) +
+   geom_text(aes(label = MIDAS), size = 3) +
+
+  geom_smooth(method = 'lm')
+plt
+```
+
+Note that Sebago Lake (MIDAS == 5786) has a strong negative slope by
+least squares, but a (small) positive slope by Thiel-Sen. It is also an outlier 
+in the graph shown above.
+
+
+
+### Results if LM used
+We filter out near-zero slopes (< 0.005m per year, or ~ 5 cm per decade) as
+meaningless.  We would not normally do that, but the Thiel-Sen slopes produces
+couple of lakes with slopes exactly equal to zero, which nevertheless has
+statistically significant trends by Kendall's tau.
+```{r}
+st_results <- st_results %>%
+  mutate(lm_sig = PValue<=0.05 & ! abs(Slope) < 0.005,
+         lm_category = ifelse(lm_sig ,
+                              if_else(Slope < 0, 'Declining', 'Increasing'),
+                              'No Change')) %>%
+  select(-lm_sig)
+
+st_results %>%
+  group_by(lm_category)%>%
+  summarize(n=n())
+
+```
+
+### Results if Thiel-Sen USed
+We test significance by Kendall's Tau.
+```{r}
+st_results <- st_results %>%
+  mutate(TS_sig = TSKPValue<=0.05  & ! abs(TSSlope) < 0.005,
+         TS_category = ifelse(TS_sig ,
+                              if_else(TSSlope < 0, 'Declining', 'Increasing'),
+                              'No Change')) %>%
+  select(-TS_sig)
+
+st_results %>%
+  group_by(TS_category)%>%
+  summarize(n=n())
+```
+
+```{r}
+st_results %>%
+  select(MIDAS, Lake, lm_category, TS_category, Samples, FirstYear, LastYear) %>%
+  arrange(lm_category) %>%
+  knitr::kable()
+```
+
+So, results are similar, although Theil-Sen detects two fewer lakes with
+significant increases in water clarity.
+
+
+# Final Results Table
+```{r}
+lt_results_minimal <- lt_results %>%
+  select(MIDAS, Samples, Stations, Years, Median, Lake, TSSlope, TS_category)
+```
+
+
+
+st_results_minimal <- st_results %>%
+  select(MIDAS, Samples, Stations, Years, Median, Lake, TSSlope, TS_category)
+
+combined_results <- lt_results_minimal %>%
+  full_join(st_results_minimal,
+            by = c("MIDAS", "Samples", "Stations", "Lake"),
+            suffix = c('_lt', '_st'))
+```
+
+
+
+
+
+```{r}
+combined_results %>%
+  select(MIDAS, Lake, lm_category, TS_category, Samples, FirstYear, LastYear) %>%
+  arrange(lm_category) %>%
+  knitr::kable()
+```
+
+
+# A side question
+Are trends related to overall clarity?
+```{r}
+m <- lm( TSSlope ~ Median, data = lt_results)
+summary(m)
+```
+
+So, the slopes tend to be SLIGHTLY lower for lakes with higher Median Secchi
+depth....
+
+Not sure what that means....
+
+```{r}
+ggplot(lt_results, aes(Median, TSSlope)) +
+  geom_smooth(method = 'lm') +
+  geom_point(aes(color = TS_category))
+```
+So if there is a relationship, it's predominately due to two lakes, so we won't
+take it too seriously.
+
+
+# Could we generate a graphic showing the trndlines for all lakes?
+Probably only by refitting models...
+```{r}
+secchi_data %>%
+filter(MIDAS %in% TrendLakesMI)
+ggplot()
+
+}
+
+
+ggplot(lt_predss, aes(year))
+
+
+
+```
