@@ -55,3 +55,18 @@ Secchi Depths are not fully addressed.
 ## Lake Morphometry
 Data on morphometry of many Maine lakes and ponds was accessed here:
 http://www.gulfofmaine.org/kb/files/9680/MaineLakes_Geography_Morphometry.xls
+
+# Sebago Lake Supplementary Data
+In data review, we realized the Sebago Lake data from the on-line repository
+was incomplete, with little data included in the DEP data from Sebago Lake
+since 2010.
+
+We requested supplementary data from Portland Water DIstrict, which manages
+long-term Sebago Lake MOnitoting, and recieved the file
+'Sebago export 2_24_2020.xlsx'.  PWD staff infomred us that they share their
+data with DEP electronically today, so it may no longer get fully incorporated
+into the on-line data, which may begathered principally through volunteer lake
+associations and the VLMP.
+
+Data was e-mailed to Curtis C. Bohlen from Nate Whalen, at Portland Water District, on December 7, 2020.  Data file name suggests data was complete as of 2/24/2020, and it
+includes data through 2019.
