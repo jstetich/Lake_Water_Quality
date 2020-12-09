@@ -102,6 +102,27 @@ secchi_data <- secchi_data %>%
   secchi_data$Scope[secchi_data$MIDAS == 3262 & secchi_data$Year == 2011] <- 'None'
 ```
 
+### Address Inconsistencies in Sebago Lake Data
+We include additional Sebago Lake data from Portland Water District, and remove 
+two volunteer Secchi depth observations from a seldom-studied site that are 
+inconsistent with other Sebago Lake data.
+
+```{r}
+fn <- 'Secchi_Sebago.csv'
+secchi_sebago_data <- read_csv(file.path(sibling, fn))
+```
+
+```{r}
+secchi_data <- secchi_data %>%
+  bind_rows(secchi_sebago_data)
+```
+
+We remove two values from the Sebago Lake record.
+```{r}
+secchi_data <- secchi_data %>%
+  filter( ! (MIDAS == 5786 & Station == 50))
+```
+
 ### Filter to Last Ten Years
 ```{r}
 secchi_data <- secchi_data %>% filter(Year > 2008)
@@ -377,9 +398,10 @@ plot(weighted_log_lm)
 par(oldpar)
 ```
 
-One can make a justification for a weighted model, here, since sample sizes
-vary significantly. A weighted model brings the regression line closer to Sebago because of its large sample size.  Sebago no longer appears as an outlier,
-although it still has the highest leverage of any lake.
+One can make a justification for a weighted model since sample sizes vary
+significantly. A weighted model brings the regression line closer to Sebago
+because of its large sample size.  Sebago still has the highest leverage of any
+lake, buy a substantial margin.
 
 We have a highly significant regression relationship, regardless of model.
 The weighted log analysis does the best job addressing Sebago Lake, but

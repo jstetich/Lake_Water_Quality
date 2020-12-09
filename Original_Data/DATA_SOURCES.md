@@ -61,12 +61,31 @@ In data review, we realized the Sebago Lake data from the on-line repository
 was incomplete, with little data included in the DEP data from Sebago Lake
 since 2010.
 
-We requested supplementary data from Portland Water DIstrict, which manages
+We requested supplementary data from Portland Water District, which manages
 long-term Sebago Lake MOnitoting, and recieved the file
 'Sebago export 2_24_2020.xlsx'.  PWD staff infomred us that they share their
-data with DEP electronically today, so it may no longer get fully incorporated
-into the on-line data, which may begathered principally through volunteer lake
+data with DEP electronically, so it may not get incorporated
+into the on-line data, which is gathered principally through volunteer lake
 associations and the VLMP.
 
-Data was e-mailed to Curtis C. Bohlen from Nate Whalen, at Portland Water District, on December 7, 2020.  Data file name suggests data was complete as of 2/24/2020, and it
-includes data through 2019.
+Data was e-mailed to Curtis C. Bohlen from Nate Whalen, at Portland Water
+District, on December 7, 2020.  Data file name suggests data was complete as
+of 2/24/2020, and it includes data through 2019.
+
+In Separate e-mail (Dec 8, 2020) in response to some questions, Nate said:
+
+> The UserVarEJ column in the Event tab is Secchi Data collected with a view
+scope with no mask.  There was a correction factor applied to account for this
+discrepancy.  I have kept the data for scientific rigor.  I would ignore the
+UserVarEJ values and simply use the SecchiDepth column.  The decimal places are
+an aberration from the statistical software export.  We only report one decimal
+place.
+
+## Sebago Lake Sampling Locations
+We located a scanned map of sebago lake sampling locations on the
+[Lakes of Maine website](https://www.lakesofmaine.org/lake-monitoring.html?m=5786)
+It is saved as"Station map for Sebago Lake.jpg"
+
+We requested geographic information on PWD (professional) sample locations from
+PWD staff, on December 12, 2020, and received the file 'Historical Lake Profile
+Sample Locations.jpg' from Nathan Whalen that same day.

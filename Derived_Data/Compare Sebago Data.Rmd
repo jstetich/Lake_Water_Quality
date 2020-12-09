@@ -1,0 +1,232 @@
+---
+title: "Compare Versions of Sebago Lake Data"
+author:  "Curtis C. Bohlen, Casco Bay Estuary Partnership"
+date: "11/29/2020"
+output:
+  github_document:
+    toc: true
+    fig_width: 7
+    fig_height: 5
+---
+
+<img
+  src="https://www.cascobayestuary.org/wp-content/uploads/2014/04/logo_sm.jpg"
+  style="position:absolute;top:10px;right:50px;" />
+
+
+# Introduction
+Sebago lake data from our primary data sources was incomplete, with little data
+available from the last ten years or so.  We requested additional data on Sebago
+Lake water quality from Portland Water District.  This Notebook examines the two
+data sources (DEP and PWD) to figure out how to integrate the PWD Sebago data into
+the larger lakes data set.
+
+PWD Staff informed us that their data is likely independent from the
+volunteer-based data included in the DEP data.  This Notebook checks that claim,
+as part of good QA/QC practice.
+
+This script compares data derived from our core data and data derived from the
+PWD data.  This poses a challenge in terms of how to organize data and code
+in our GitHub repository. 
+
+For this script to run, it needs to run based on derived data files with the
+original (incomplete) Sebago Lake data, while we ultimately want to analyze
+complete data.  To deal with that, we do not alter our principal Derived_Data
+files here, but add corrected Sebago Lakes files, which will have to be
+separately loaded in all of our data analysis and graphics notebooks.
+
+# Load Libraries
+```{r}
+library(readxl)
+#library(readr)
+library(tidyverse)
+
+library(CBEPgraphics)
+load_cbep_fonts()
+theme_set(theme_cbep())
+```
+
+# Load Data
+
+# Read Parsed Lakes Data and limit to Sebago Lake 
+```{r}
+Secchi <- read_csv('Secchi.csv') %>%
+  filter(MIDAS == 5786) %>%
+  mutate(Year = as.numeric(format(Date, format = '%Y')))
+Temp_DO  <- read_csv('Temp_DO.csv') %>%
+  filter(MIDAS == 5786) %>%
+  mutate(Year = as.numeric(format(Date, format = '%Y')))
+Annual_Means <- read_csv('Annual_Means.csv') %>%
+  filter(MIDAS == 5786)
+Overall_Means <- read_csv('Overall_Means.csv') %>%
+  filter(MIDAS == 5786)
+sample_data <- read_csv('Sample_Data.csv') %>%
+  filter(MIDAS == 5786) %>%
+  mutate(Year = as.numeric(format(Date, format = '%Y')))
+```
+
+## Folder References
+```{r}
+sisterfldnm <- 'Original_Data'
+parent <- dirname(getwd())
+sister <- file.path(parent,sisterfldnm)
+```
+
+# Read PWD Sebago Lakes Secchi Depth Data
+```{r}
+fn <- 'Sebago export 2_24_2020.xlsx'
+Secchi_Sebago <- read_excel(file.path(sister, fn), 
+    sheet = "Event", col_types = c("skip", "text",    "date", "skip", "skip",
+                                   "skip", "numeric", "skip", "skip", "skip", 
+                                   "skip", "skip",    "skip", "skip", "skip", 
+                                   "skip", "skip",    "skip", "skip", "skip")) %>%
+  mutate(Lake   = "Sebago Lake",
+         MIDAS =  5786,
+         Town =  "Gray, Windham",
+         Year = as.numeric(format(Date, format = '%Y'))) %>%
+  rename(Secchi_Depth = SecchiDepth) %>%
+  relocate(MIDAS, Lake, Town, StationName, Date, Year) %>%
+  filter (! is.na(Secchi_Depth))
+```
+
+# Review of Sebago Lake Data
+## Sampling Stations Crosswalk
+We check to see if DEP and PWD samples coincide by station and year.
+### Stations by Years from Main Data
+```{r}
+knitr::kable(xtabs(~ Year + Station, data = Secchi))
+```
+
+### Stations by Years from PWD  Data
+```{r}
+knitr::kable(xtabs(~ Year + StationName, data = Secchi_Sebago))
+```
+
+No historical sampling location (by Station Number) lines up with any of the PWD
+sampling Stations, in terms of number of samples per year. This suggests the two
+data sources are independent.
+
+## Check for Duplicate Data
+We create a combined data source, giving arbitrary Station Numbers to PWD
+sampling locations, just so we can combine data sets informally.
+```{r}
+test <- Secchi_Sebago %>%
+  mutate(Station = as.numeric(factor(StationName)) + 100) %>%
+  bind_rows(Secchi) %>%
+  mutate(Source = c("PWD", "DEP")[(Station > 100)+1] )
+
+ggplot(test, aes(Date, Secchi_Depth)) +
+  geom_point(aes(color = Source), alpha = 0.25)
+```
+It's quite clear these are non-overlapping or minimally overlapping data series.
+
+We can search explicitly for duplicated observations, although it takes careful
+manual review to identify any issues. Also, to return both members of a
+duplicated pair, we need to search both forward and backward with
+`duplicated()`.
+```{r}
+test %>%
+  filter (! is.na(Secchi_Depth)) %>%
+  mutate(from_PWD =  ! is.na(StationName)) %>%
+  select(Date, Station, Secchi_Depth, from_PWD) %>%
+  mutate(dup_data = duplicated(cbind(Secchi_Depth, Date)) |
+                    duplicated(cbind(Secchi_Depth, Date),
+                               fromLast = TRUE),
+         dup_sample = duplicated(cbind(Station, Date)) |
+                      duplicated(cbind(Station, Date),
+                                 fromLast = TRUE)) %>%
+  filter(dup_data) %>%
+  select(-dup_data) %>%
+  arrange(Date, Secchi_Depth, Station )
+```
+
+1.  In 1982, 1983, 1984, and 1985,  stations 1 and 11 frequently show duplicate
+values, and they are, for some reason, being flagged as duplicate Stations and 
+Dates, even though duplicates are not showing here.  That suggests there is a
+start of replication, and either an unusual number of replicates, or some
+data may have been relabeled.  But stations 1 and 11 are not close to each
+other.  The error, if error it is, is rate.  WE have only weak evidence that we
+should remove these data, so we leave them.
+
+2.  There is evidence that field duplicate sampling practices starting in 1980s
+or so, in both data sources. That's O.K. 
+
+3. Some Secchi values are reported to three (or more) decimal places. Three
+decimal places for Secchi depth implies unlikely precision, to millimeter
+accuracy.  Checking with PWD staff, we learned that these values are the result
+of data correction they applied, correcting observations for different equipment
+used in the field. Looking closely at the PWD source data in Excel, those three
+decimal place (or better) values occur consistently up through 1996, and not
+later.  They formally report only to the nearest 10 cm (1/10th of a meter).
+
+4.  Pairs of results from different stations are sometimes equal to three
+decimal places in that older PWD data.  Duplication to three decimals is rare
+enough that these almost certainly represent chance occurrences.
+*  Stations 105 and 106  in October of 1990
+*  Stations 101 and 105  in July and October of 1994
+*  Stations 101 and 105  in July 1996 and 1998
+
+5.  More frequently, matching values are reported identical to one decimal
+place.  That is expected from time to time simply due to the sampling process. 
+Values should be similar, especially at nearby locations in the lake, and
+identical observations to one decimal place should occur by chance.  We argue
+here that these duplicate values are legitimate data, and should be left in
+place until and unless we get additional information on which to base a decision
+to omit observations.
+
+### Rough Probablities of Duplicates
+Roughly speaking, one could imagine that an observation is drawn randomly over a
+two meter range, giving twenty possible observations.  On any given date, with
+five observations, each equally likely, the probability of at least one match
+is:
+
+$$1 - (20/20)(19/20)(18/20)(17/20)(16/20)$$
+
+$$1 - ( \frac{20!}{15!} \times 20^-5) \approx 0.42% $$
+In reality, we don't expect the observational error to be quite that large, or
+for the ranges at different Stations to exactly line up, so that probably
+overstates the probability of matches.  What it shows is that we should expect a
+fair number of matches.
+
+Out of 1800 observations, (again, very roughly; since we don't always have five
+observations on any given day) we would expect 
+$0.42 \times 1800/5 \approx 150$
+matches.  In fact, we got about half that many. Suggesting the
+frequency of matches we observe is well within expectations.
+
+We have some data reported as duplicated values and dates or replicates, within 
+each data source.  A total of 151 duplicates -- INCLUDING replicates -- out of 
+almost 1800 samples is not unreasonable.  We may have a few duplicate samples
+buried in these data, but there is no systematic duplication of records.
+
+For Secchi Depth, we will fold the PWD data in with the volunteer-based data
+to create a composite data record.  That means we need the
+
+# Save Sebago Secchi Data in Compatible Format
+The Secchi Data From Sebago Lake lacks some of the metadata available for the
+volunteer data, but it is otherwise compatible.  We save it here, to read it
+into our data analysis and graphics Notebooks.  To simplify later analyses, we
+add arbitrary Station Code numbers, since DEP data identifies sampling stations
+with a numeric code.
+```{r}
+Secchi_Sebago <- Secchi_Sebago %>%
+  filter (! is.na(Secchi_Depth)) %>%
+  filter(Year < 2019) %>%
+  mutate(Station = as.numeric(factor(StationName)) + 100)
+```
+
+## StationName - Station Correspondence
+```{r}
+Secchi_Sebago %>%
+  select(StationName, Station) %>%
+  unique() %>%
+  knitr::kable()
+```
+
+```{r}
+Secchi_Sebago %>%
+  write_csv('Secchi_Sebago.csv')
+```
+
+
+

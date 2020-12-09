@@ -34,13 +34,13 @@ included in these data but has no actual data -- only NAs for the Secchi Depth.
 sibfldnm <- 'Derived_Data'
 parent <- dirname(getwd())
 sibling <- file.path(parent,sibfldnm)
-fn <- 'Secchi.csv'
 
 dir.create(file.path(getwd(), 'figures'), showWarnings = FALSE)
 ```
 
 ## Read Secchi Data
 ```{r}
+fn <- 'Secchi.csv'
 secchi_data <- read_csv(file.path(sibling, fn))
 ```
 
@@ -106,23 +106,38 @@ secchi_data <- secchi_data %>%
                       secchi_data$Year == 2011] <- 'None'
 ```
 
-### Address Inconsistency in Sebago Lake Data
+### Address Inconsistencies in Sebago Lake Data
 ```{r}
 secchi_data %>%
   filter(MIDAS == 5786) %>%
   ggplot(aes(Year, Secchi_Depth, color = factor(Station))) +
   geom_jitter(height = 0, width = 0.1)
 ```
-This points to several problems:
+This points to several problems:  
 1.  Sebago Lake has been one of the most consistently sampled lakes, under a
 long-running program managed by the Portland Water District.  Yet  we have
 major gaps in the recent record.  This probably reflects changes in how data has
 been reported to DEP.  
 2.  The extreme low values in 2017 and 2018 correspond to the only two samples
 from a new station.  Any recent trend is due to addition of this anomolous new source
-of data.  
+of data.
 
-Accordingly, we chose to remove those values from the Sebago Lake record.
+We correct these problems in two steps.  First, we load in Portland Water
+District's extensive Sebago Lake archive of Secchi data, then delete two recent
+samples that are not reflective of whole-lake conditions.
+
+
+```{r}
+fn <- 'Secchi_Sebago.csv'
+secchi_sebago_data <- read_csv(file.path(sibling, fn))
+```
+
+```{r}
+secchi_data <- secchi_data %>%
+  bind_rows(secchi_sebago_data)
+```
+
+We remove two values from the Sebago Lake record.
 ```{r}
 secchi_data <- secchi_data %>%
   filter( ! (MIDAS == 5786 & Station == 50))
@@ -428,9 +443,9 @@ plt <-  ggplot(lt_results, aes(Slope, TSSlope))  +
 plt
 ```
 So results are similar either way.  The TS Slope tends to be slightly lower
-than the linear model slope, but the regression is not significantly different
-from a 1:1 line.  The two lakes, `MIDAS == 3420` and `MIDAS = 3448` show
-statistically significant improving trends by linear model, but not by Theil-Sen estimators.
+than the linear model slope, especially for higher values of the slope, but the regression is not significantly different from a 1:1 line.  The two lakes,
+`MIDAS == 3420` and `MIDAS = 3448` show statistically significant improving
+trends by linear model, but not by Theil-Sen estimators.
 
 ### Short-term
 ```{r}
@@ -539,11 +554,6 @@ plt <-  ggplot(st_results, aes(Slope, TSSlope))  +
 plt
 ```
 
-Note that before we removed Station 50 from the Sebago Lake (MIDAS == 5786)
-data, has a strong negative slope by least squares, but a (small) positive slope
-by Thiel-Sen. After removing the Station 50 points, results are more
-consistent.
-
 
 ```{r}
 st_results %>%
@@ -584,15 +594,15 @@ combined_results %>%
          TS_category_st = factor(TS_category_st, levels = c('Declining', 
                                                             'No Change',
                                                             'Increasing'))) %>%
-  select(MIDAS, Lake, Samples_lt, FirstYear_lt,
+  select(Lake, Samples_lt, FirstYear_lt,
          TS_category_lt, TS_category_st) %>%
-  arrange(TS_category_lt) %>%
+  arrange(Lake) %>%
   
-  knitr::kable(col.names = c('MIDAS', 'Lake', 'Total Sample', 'Earliest Data',
-                        'Long Term Trend', 'Short Term Trend' ))
+  knitr::kable(align = "lccll", col.names = c('Lake', 'Observations', 'Earliest Data',
+                        'Long Term Trend', 'Recent Trend' ))
                         
 ```
-Relevant sample sizes and starting dates for Duchk andBog ponds are as follow3s:
+Relevant sample sizes and starting dates for Duck and Bog ponds are as follows:
 
 ```{r}
 secchi_data %>%
@@ -614,8 +624,6 @@ summary(m)
 So, the slopes tend to be SLIGHTLY lower for lakes with higher Median Secchi
 depth....
 
-Not sure what that means....
-
 ```{r}
 ggplot(lt_results, aes(Median, TSSlope)) +
   geom_smooth(method = 'lm') +
@@ -624,7 +632,6 @@ ggplot(lt_results, aes(Median, TSSlope)) +
 
 So if there is a relationship, it's weak and predominately due to two lakes, so
 we won't take it too seriously.
-
 
 # Trendlines for All Lakes
 ```{r fig.width = 3.5, fig.height = 5}

@@ -8,6 +8,8 @@ Curtis C. Bohlen, Casco Bay Estuary Partnership
       - [Folder References](#folder-references)
           - [Read Secchi Data](#read-secchi-data)
           - [Data Cleanup](#data-cleanup)
+          - [Address Inconsistencies in Sebago Lake
+            Data](#address-inconsistencies-in-sebago-lake-data)
           - [Filter to Last Ten Years](#filter-to-last-ten-years)
       - [Read Morphometric Data](#read-morphometric-data)
       - [Lakes With Sufficient Data](#lakes-with-sufficient-data)
@@ -37,14 +39,14 @@ Curtis C. Bohlen, Casco Bay Estuary Partnership
 library(tidyverse)
 ```
 
-    ## -- Attaching packages ---------------------------------------------------------------------------------- tidyverse 1.3.0 --
+    ## -- Attaching packages ----------------------------------------------------------------------------------- tidyverse 1.3.0 --
 
     ## v ggplot2 3.3.2     v purrr   0.3.4
     ## v tibble  3.0.3     v dplyr   1.0.2
     ## v tidyr   1.1.2     v stringr 1.4.0
     ## v readr   1.3.1     v forcats 0.5.0
 
-    ## -- Conflicts ------------------------------------------------------------------------------------- tidyverse_conflicts() --
+    ## -- Conflicts -------------------------------------------------------------------------------------- tidyverse_conflicts() --
     ## x dplyr::filter() masks stats::filter()
     ## x dplyr::lag()    masks stats::lag()
 
@@ -170,6 +172,41 @@ secchi_data <- secchi_data %>%
   secchi_data$Scope[secchi_data$MIDAS == 3262 & secchi_data$Year == 2011] <- 'None'
 ```
 
+### Address Inconsistencies in Sebago Lake Data
+
+We include additional Sebago Lake data from Portland Water District, and
+remove two volunteer Secchi depth observations from a seldom-studied
+site that are inconsistent with other Sebago Lake data.
+
+``` r
+fn <- 'Secchi_Sebago.csv'
+secchi_sebago_data <- read_csv(file.path(sibling, fn))
+```
+
+    ## Parsed with column specification:
+    ## cols(
+    ##   MIDAS = col_double(),
+    ##   Lake = col_character(),
+    ##   Town = col_character(),
+    ##   StationName = col_character(),
+    ##   Date = col_datetime(format = ""),
+    ##   Year = col_double(),
+    ##   Secchi_Depth = col_double(),
+    ##   Station = col_double()
+    ## )
+
+``` r
+secchi_data <- secchi_data %>%
+  bind_rows(secchi_sebago_data)
+```
+
+We remove two values from the Sebago Lake record.
+
+``` r
+secchi_data <- secchi_data %>%
+  filter( ! (MIDAS == 5786 & Station == 50))
+```
+
 ### Filter to Last Ten Years
 
 ``` r
@@ -233,7 +270,7 @@ secchi_data %>%
   ggtitle('Recent Secchi Depth Data')
 ```
 
-![](Secchi_Recent_Graphics_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
+![](Secchi_Recent_Graphics_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
 
 ``` r
 secchi_data %>%
@@ -255,7 +292,7 @@ secchi_data %>%
   ggtitle('Recent Secchi Depth Data')
 ```
 
-![](Secchi_Recent_Graphics_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
+![](Secchi_Recent_Graphics_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
 
 ``` r
 ggsave('figures/current_secchi_data_availability.pdf', device = cairo_pdf, width = 7, height = 8)
@@ -366,7 +403,7 @@ plt <- secchi_data %>%
 plt
 ```
 
-![](Secchi_Recent_Graphics_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
+![](Secchi_Recent_Graphics_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
 
 ``` r
 ggsave('figures/current_secchi_bar.pdf', device = cairo_pdf,
@@ -395,7 +432,7 @@ plt <- secchi_data %>%
 plt
 ```
 
-![](Secchi_Recent_Graphics_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
+![](Secchi_Recent_Graphics_files/figure-gfm/unnamed-chunk-16-1.png)<!-- -->
 
 ``` r
 ggsave('figures/current_secchi_violin.pdf', device = cairo_pdf,
@@ -426,10 +463,10 @@ cat('Pearson\n')
 cor(tmp$Median, tmp[,2:12], use = 'pairwise')
 ```
 
-    ##      Flushes_p_yr HUC10_Code   Easting   Northing   Latitude Longitude
-    ## [1,]   -0.3210285 -0.0792604 0.2344622 -0.3762106 -0.3536981 0.2343718
+    ##      Flushes_p_yr  HUC10_Code   Easting   Northing   Latitude Longitude
+    ## [1,]   -0.3157909 -0.08511318 0.2316798 -0.3989279 -0.3645313 0.2289313
     ##      Area_sq_m  Perim_km  D_Mean_m   D_Max_m Volume_m3
-    ## [1,] 0.2870965 0.3162291 0.5788747 0.4888161 0.2623607
+    ## [1,] 0.3884424 0.4063973 0.6642717 0.5846967 0.3668176
 
 ``` r
 cat('\n\nSpearman\n')
@@ -443,10 +480,10 @@ cat('\n\nSpearman\n')
 cor(tmp$Median, tmp[,2:12], use = 'pairwise', method='spearman')
 ```
 
-    ##      Flushes_p_yr HUC10_Code   Easting Northing   Latitude Longitude Area_sq_m
-    ## [1,]   -0.6910449 -0.1108531 0.2048486 -0.27977 -0.2650702 0.1983285 0.4860988
-    ##       Perim_km  D_Mean_m   D_Max_m Volume_m3
-    ## [1,] 0.5050104 0.7066025 0.6213781 0.5715941
+    ##      Flushes_p_yr HUC10_Code   Easting   Northing   Latitude Longitude
+    ## [1,]   -0.6913024 -0.1108531 0.2039002 -0.2835635 -0.2681525 0.1973801
+    ##      Area_sq_m  Perim_km  D_Mean_m   D_Max_m Volume_m3
+    ## [1,]  0.492501 0.5110584 0.7075043 0.6218932 0.5769998
 
 ``` r
 cat('\n\nKendall\n')
@@ -461,9 +498,9 @@ cor(tmp$Median, tmp[,2:12], use = 'pairwise', method='kendall')
 ```
 
     ##      Flushes_p_yr HUC10_Code   Easting   Northing   Latitude Longitude
-    ## [1,]   -0.5454573 -0.1015026 0.1337341 -0.1607814 -0.1577762 0.1247183
-    ##      Area_sq_m  Perim_km D_Mean_m   D_Max_m Volume_m3
-    ## [1,] 0.3536495 0.3758517 0.555403 0.4844201 0.4114378
+    ## [1,]   -0.5486471 -0.1015026 0.1307288 -0.1637867 -0.1607814  0.121713
+    ##      Area_sq_m  Perim_km  D_Mean_m   D_Max_m Volume_m3
+    ## [1,] 0.3566592 0.3788706 0.5586134 0.4876175 0.4146149
 
 Basically, that shows:
 
@@ -503,7 +540,7 @@ plt
 
     ## Warning: Removed 3 rows containing missing values (geom_point).
 
-![](Secchi_Recent_Graphics_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
+![](Secchi_Recent_Graphics_files/figure-gfm/unnamed-chunk-18-1.png)<!-- -->
 
 ``` r
   rm(tmp3)
@@ -526,20 +563,20 @@ summary(the_lm)
     ## lm(formula = Secchi ~ DAvg, data = tmp2)
     ## 
     ## Residuals:
-    ##     Min      1Q  Median      3Q     Max 
-    ## -2.3639 -0.8631  0.0462  0.8097  3.1846 
+    ##      Min       1Q   Median       3Q      Max 
+    ## -2.23776 -0.82555  0.07017  0.72814  3.02926 
     ## 
     ## Coefficients:
     ##             Estimate Std. Error t value Pr(>|t|)    
-    ## (Intercept)  4.87352    0.34339  14.192 7.56e-16 ***
-    ## DAvg         0.17246    0.04166   4.139 0.000217 ***
+    ## (Intercept)  4.68627    0.32827  14.276 6.37e-16 ***
+    ## DAvg         0.20638    0.03983   5.182 9.98e-06 ***
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
-    ## Residual standard error: 1.266 on 34 degrees of freedom
+    ## Residual standard error: 1.21 on 34 degrees of freedom
     ##   (1 observation deleted due to missingness)
-    ## Multiple R-squared:  0.3351, Adjusted R-squared:  0.3155 
-    ## F-statistic: 17.14 on 1 and 34 DF,  p-value: 0.0002167
+    ## Multiple R-squared:  0.4413, Adjusted R-squared:  0.4248 
+    ## F-statistic: 26.85 on 1 and 34 DF,  p-value: 9.979e-06
 
 ``` r
 anova(the_lm)
@@ -549,8 +586,8 @@ anova(the_lm)
     ## 
     ## Response: Secchi
     ##           Df Sum Sq Mean Sq F value    Pr(>F)    
-    ## DAvg       1 27.460 27.4597  17.135 0.0002167 ***
-    ## Residuals 34 54.486  1.6025                      
+    ## DAvg       1 39.324  39.324  26.851 9.979e-06 ***
+    ## Residuals 34 49.794   1.465                      
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
@@ -559,7 +596,7 @@ oldpar <- par(mfrow = c(2,2))
 plot(the_lm)
 ```
 
-![](Secchi_Recent_Graphics_files/figure-gfm/unnamed-chunk-17-1.png)<!-- -->
+![](Secchi_Recent_Graphics_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
 
 ``` r
 par(oldpar)
@@ -579,19 +616,19 @@ summary(the_log_lm)
     ## 
     ## Residuals:
     ##      Min       1Q   Median       3Q      Max 
-    ## -1.78737 -0.77170 -0.03651  0.78762  2.55949 
+    ## -1.91817 -0.54711 -0.05251  0.77292  2.41602 
     ## 
     ## Coefficients:
     ##             Estimate Std. Error t value Pr(>|t|)    
-    ## (Intercept)   2.6317     0.5055   5.206 9.28e-06 ***
-    ## log(DAvg)     1.9930     0.2831   7.039 3.99e-08 ***
+    ## (Intercept)   2.3677     0.4917   4.816 2.98e-05 ***
+    ## log(DAvg)     2.1692     0.2754   7.877 3.58e-09 ***
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
-    ## Residual standard error: 0.9904 on 34 degrees of freedom
+    ## Residual standard error: 0.9633 on 34 degrees of freedom
     ##   (1 observation deleted due to missingness)
-    ## Multiple R-squared:  0.593,  Adjusted R-squared:  0.5811 
-    ## F-statistic: 49.54 on 1 and 34 DF,  p-value: 3.991e-08
+    ## Multiple R-squared:  0.646,  Adjusted R-squared:  0.6356 
+    ## F-statistic: 62.05 on 1 and 34 DF,  p-value: 3.585e-09
 
 ``` r
 anova(the_log_lm)
@@ -601,8 +638,8 @@ anova(the_log_lm)
     ## 
     ## Response: Secchi
     ##           Df Sum Sq Mean Sq F value    Pr(>F)    
-    ## log(DAvg)  1 48.597  48.597  49.545 3.991e-08 ***
-    ## Residuals 34 33.349   0.981                      
+    ## log(DAvg)  1 57.570  57.570  62.046 3.585e-09 ***
+    ## Residuals 34 31.547   0.928                      
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
@@ -611,7 +648,7 @@ oldpar <- par(mfrow = c(2,2))
 plot(the_log_lm)
 ```
 
-![](Secchi_Recent_Graphics_files/figure-gfm/unnamed-chunk-19-1.png)<!-- -->
+![](Secchi_Recent_Graphics_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
 
 ``` r
 par(oldpar)
@@ -632,19 +669,19 @@ summary(weighted_log_lm)
     ## 
     ## Weighted Residuals:
     ##     Min      1Q  Median      3Q     Max 
-    ## -6.1464 -1.8292 -0.2007  1.8998  9.4090 
+    ## -6.5246 -1.5413  0.0923  2.2726  9.0078 
     ## 
     ## Coefficients:
     ##             Estimate Std. Error t value Pr(>|t|)    
-    ## (Intercept)   3.0521     0.6657   4.585 5.89e-05 ***
-    ## log(DAvg)     1.7515     0.3637   4.816 2.97e-05 ***
+    ## (Intercept)   2.7643     0.5808   4.760 3.51e-05 ***
+    ## log(DAvg)     1.9256     0.3062   6.288 3.64e-07 ***
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
-    ## Residual standard error: 3.239 on 34 degrees of freedom
+    ## Residual standard error: 3.223 on 34 degrees of freedom
     ##   (1 observation deleted due to missingness)
-    ## Multiple R-squared:  0.4055, Adjusted R-squared:  0.388 
-    ## F-statistic: 23.19 on 1 and 34 DF,  p-value: 2.971e-05
+    ## Multiple R-squared:  0.5377, Adjusted R-squared:  0.5241 
+    ## F-statistic: 39.54 on 1 and 34 DF,  p-value: 3.645e-07
 
 ``` r
 anova(weighted_log_lm)
@@ -654,8 +691,8 @@ anova(weighted_log_lm)
     ## 
     ## Response: Secchi
     ##           Df Sum Sq Mean Sq F value    Pr(>F)    
-    ## log(DAvg)  1 243.36 243.356  23.194 2.971e-05 ***
-    ## Residuals 34 356.74  10.492                      
+    ## log(DAvg)  1 410.75  410.75  39.544 3.645e-07 ***
+    ## Residuals 34 353.16   10.39                      
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
@@ -664,17 +701,16 @@ oldpar <- par(mfrow = c(2,2))
 plot(weighted_log_lm)
 ```
 
-![](Secchi_Recent_Graphics_files/figure-gfm/unnamed-chunk-21-1.png)<!-- -->
+![](Secchi_Recent_Graphics_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
 
 ``` r
 par(oldpar)
 ```
 
-One can make a justification for a weighted model, here, since sample
-sizes vary significantly. A weighted model brings the regression line
-closer to Sebago because of its large sample size. Sebago no longer
-appears as an outlier, although it still has the highest leverage of any
-lake.
+One can make a justification for a weighted model since sample sizes
+vary significantly. A weighted model brings the regression line closer
+to Sebago because of its large sample size. Sebago still has the highest
+leverage of any lake, buy a substantial margin.
 
 We have a highly significant regression relationship, regardless of
 model. The weighted log analysis does the best job addressing Sebago
@@ -703,7 +739,7 @@ ggplot(tmp, aes(D_Mean_m, Median)) +
 
     ## Warning: Removed 1 rows containing missing values (geom_point).
 
-![](Secchi_Recent_Graphics_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
+![](Secchi_Recent_Graphics_files/figure-gfm/unnamed-chunk-25-1.png)<!-- -->
 
 ``` r
 rm(df)
@@ -738,7 +774,7 @@ plt
 
     ## Warning: Removed 1 rows containing missing values (geom_point).
 
-![](Secchi_Recent_Graphics_files/figure-gfm/unnamed-chunk-23-1.png)<!-- -->
+![](Secchi_Recent_Graphics_files/figure-gfm/unnamed-chunk-26-1.png)<!-- -->
 
 ``` r
 ggsave('figures/current_secchi_by_depth.pdf', device = cairo_pdf,
@@ -770,4 +806,4 @@ plt
 
     ## Warning: Removed 1 rows containing missing values (geom_point).
 
-![](Secchi_Recent_Graphics_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
+![](Secchi_Recent_Graphics_files/figure-gfm/unnamed-chunk-27-1.png)<!-- -->

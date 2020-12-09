@@ -8,8 +8,8 @@ Curtis C. Bohlen, Casco Bay Estuary Partnership
       - [Folder References](#folder-references)
       - [Read Secchi Data](#read-secchi-data)
           - [Data Cleanup](#data-cleanup)
-          - [Address Inconsistency in Sebago Lake
-            Data](#address-inconsistency-in-sebago-lake-data)
+          - [Address Inconsistencies in Sebago Lake
+            Data](#address-inconsistencies-in-sebago-lake-data)
       - [Recent Data Subset](#recent-data-subset)
       - [Read Morphometric Data](#read-morphometric-data)
       - [Read Morphometric Data](#read-morphometric-data-1)
@@ -46,14 +46,14 @@ Curtis C. Bohlen, Casco Bay Estuary Partnership
 library(tidyverse)
 ```
 
-    ## -- Attaching packages ---------------------------------------------------------------------------------- tidyverse 1.3.0 --
+    ## -- Attaching packages ----------------------------------------------------------------------------------- tidyverse 1.3.0 --
 
     ## v ggplot2 3.3.2     v purrr   0.3.4
     ## v tibble  3.0.3     v dplyr   1.0.2
     ## v tidyr   1.1.2     v stringr 1.4.0
     ## v readr   1.3.1     v forcats 0.5.0
 
-    ## -- Conflicts ------------------------------------------------------------------------------------- tidyverse_conflicts() --
+    ## -- Conflicts -------------------------------------------------------------------------------------- tidyverse_conflicts() --
     ## x dplyr::filter() masks stats::filter()
     ## x dplyr::lag()    masks stats::lag()
 
@@ -79,7 +79,6 @@ NAs for the Secchi Depth.
 sibfldnm <- 'Derived_Data'
 parent <- dirname(getwd())
 sibling <- file.path(parent,sibfldnm)
-fn <- 'Secchi.csv'
 
 dir.create(file.path(getwd(), 'figures'), showWarnings = FALSE)
 ```
@@ -87,6 +86,7 @@ dir.create(file.path(getwd(), 'figures'), showWarnings = FALSE)
 ## Read Secchi Data
 
 ``` r
+fn <- 'Secchi.csv'
 secchi_data <- read_csv(file.path(sibling, fn))
 ```
 
@@ -184,7 +184,7 @@ secchi_data <- secchi_data %>%
                       secchi_data$Year == 2011] <- 'None'
 ```
 
-### Address Inconsistency in Sebago Lake Data
+### Address Inconsistencies in Sebago Lake Data
 
 ``` r
 secchi_data %>%
@@ -194,16 +194,42 @@ secchi_data %>%
 ```
 
 ![](Secchi_Trend_Analysis_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
-This points to several problems: 1. Sebago Lake has been one of the most
-consistently sampled lakes, under a long-running program managed by the
-Portland Water District. Yet we have major gaps in the recent record.
-This probably reflects changes in how data has been reported to DEP.  
+This points to several problems:  
+1\. Sebago Lake has been one of the most consistently sampled lakes,
+under a long-running program managed by the Portland Water District. Yet
+we have major gaps in the recent record. This probably reflects changes
+in how data has been reported to DEP.  
 2\. The extreme low values in 2017 and 2018 correspond to the only two
 samples from a new station. Any recent trend is due to addition of this
 anomolous new source of data.
 
-Accordingly, we chose to remove those values from the Sebago Lake
-record.
+We correct these problems in two steps. First, we load in Portland Water
+District’s extensive Sebago Lake archive of Secchi data, then delete two
+recent samples that are not reflective of whole-lake conditions.
+
+``` r
+fn <- 'Secchi_Sebago.csv'
+secchi_sebago_data <- read_csv(file.path(sibling, fn))
+```
+
+    ## Parsed with column specification:
+    ## cols(
+    ##   MIDAS = col_double(),
+    ##   Lake = col_character(),
+    ##   Town = col_character(),
+    ##   StationName = col_character(),
+    ##   Date = col_datetime(format = ""),
+    ##   Year = col_double(),
+    ##   Secchi_Depth = col_double(),
+    ##   Station = col_double()
+    ## )
+
+``` r
+secchi_data <- secchi_data %>%
+  bind_rows(secchi_sebago_data)
+```
+
+We remove two values from the Sebago Lake record.
 
 ``` r
 secchi_data <- secchi_data %>%
@@ -301,7 +327,7 @@ secchi_data %>%
   ggtitle('Secchi Depth Data')
 ```
 
-![](Secchi_Trend_Analysis_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
+![](Secchi_Trend_Analysis_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
 
 ``` r
 # ggsave('figures/current_secchi_data_availability.pdf', device = cairo_pdf,
@@ -595,6 +621,7 @@ lt_results %>%
 |  3696 | Crescent Lake      | No Change    | No Change    |     720 |      1974 |     2018 |
 |  3708 | Crystal Lake       | No Change    | No Change    |     316 |      1974 |     2018 |
 |  3728 | Collins Pond       | No Change    | No Change    |     248 |      1975 |     2018 |
+|  5786 | Sebago Lake        | No Change    | No Change    |    1723 |      1970 |     2018 |
 |  9685 | Bay of Naples Lake | No Change    | No Change    |     377 |      1976 |     2018 |
 
 ### Test: Comparison of Linear and Thiel-Sen Estimator Slopes
@@ -606,7 +633,7 @@ might expect.
 cor(lt_results$Slope, lt_results$TSSlope)
 ```
 
-    ## [1] 0.8628931
+    ## [1] 0.8580664
 
 ``` r
 plt <-  ggplot(lt_results, aes(Slope, TSSlope))  +
@@ -622,12 +649,13 @@ plt
 
     ## `geom_smooth()` using formula 'y ~ x'
 
-![](Secchi_Trend_Analysis_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
+![](Secchi_Trend_Analysis_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
 So results are similar either way. The TS Slope tends to be slightly
-lower than the linear model slope, but the regression is not
-significantly different from a 1:1 line. The two lakes, `MIDAS == 3420`
-and `MIDAS = 3448` show statistically significant improving trends by
-linear model, but not by Theil-Sen estimators.
+lower than the linear model slope, especially for higher values of the
+slope, but the regression is not significantly different from a 1:1
+line. The two lakes, `MIDAS == 3420` and `MIDAS = 3448` show
+statistically significant improving trends by linear model, but not by
+Theil-Sen estimators.
 
 ### Short-term
 
@@ -847,7 +875,7 @@ There is only moderate correlation between the two slope estimators.
 cor(st_results$Slope, st_results$TSSlope)
 ```
 
-    ## [1] 0.9343601
+    ## [1] 0.9349034
 
 ``` r
 plt <-  ggplot(st_results, aes(Slope, TSSlope))  +
@@ -863,12 +891,7 @@ plt
 
     ## `geom_smooth()` using formula 'y ~ x'
 
-![](Secchi_Trend_Analysis_files/figure-gfm/unnamed-chunk-26-1.png)<!-- -->
-
-Note that before we removed Station 50 from the Sebago Lake (MIDAS ==
-5786) data, has a strong negative slope by least squares, but a (small)
-positive slope by Thiel-Sen. After removing the Station 50 points,
-results are more consistent.
+![](Secchi_Trend_Analysis_files/figure-gfm/unnamed-chunk-28-1.png)<!-- -->
 
 ``` r
 st_results %>%
@@ -902,6 +925,7 @@ st_results %>%
 |  3728 | Collins Pond       | Increasing   | Increasing   |      48 |      2012 |     2018 |
 |  3734 | Highland Lake      | Increasing   | Increasing   |     333 |      2009 |     2018 |
 |  5780 | Long Lake          | Increasing   | Increasing   |     374 |      2009 |     2018 |
+|  5786 | Sebago Lake        | Increasing   | Increasing   |     276 |      2009 |     2018 |
 |  3228 | Duck Pond          | No Change    | No Change    |       6 |      2013 |     2018 |
 |  3370 | Holt Pond          | No Change    | No Change    |      10 |      2009 |     2018 |
 |  3376 | Cold Rain Pond     | No Change    | No Change    |      76 |      2009 |     2018 |
@@ -950,55 +974,56 @@ combined_results %>%
          TS_category_st = factor(TS_category_st, levels = c('Declining', 
                                                             'No Change',
                                                             'Increasing'))) %>%
-  select(MIDAS, Lake, Samples_lt, FirstYear_lt,
+  select(Lake, Samples_lt, FirstYear_lt,
          TS_category_lt, TS_category_st) %>%
-  arrange(TS_category_lt) %>%
+  arrange(Lake) %>%
   
-  knitr::kable(col.names = c('MIDAS', 'Lake', 'Total Sample', 'Earliest Data',
-                        'Long Term Trend', 'Short Term Trend' ))
+  knitr::kable(align = "lccll", col.names = c('Lake', 'Observations', 'Earliest Data',
+                        'Long Term Trend', 'Recent Trend' ))
 ```
 
-| MIDAS | Lake               | Total Sample | Earliest Data | Long Term Trend | Short Term Trend |
-| ----: | :----------------- | -----------: | ------------: | :-------------- | :--------------- |
-|  3382 | Tricky Pond        |          650 |          1976 | Declining       | No Change        |
-|  3690 | Raymond Pond       |          238 |          1974 | Declining       | No Change        |
-|  3734 | Highland Lake      |          859 |          1974 | Declining       | Increasing       |
-|  3188 | Foster Pond        |          671 |          1984 | No Change       | Declining        |
-|  3370 | Holt Pond          |           21 |          2000 | No Change       | No Change        |
-|  3374 | Peabody Pond       |          438 |          1976 | No Change       | Increasing       |
-|  3376 | Cold Rain Pond     |          491 |          1987 | No Change       | No Change        |
-|  3388 | Parker Pond        |          209 |          1978 | No Change       | Declining        |
-|  3396 | Adams Pond         |          432 |          1989 | No Change       | Increasing       |
-|  3420 | Bear Pond          |          480 |          1978 | No Change       | Increasing       |
-|  3424 | Little Moose Pond  |          313 |          1987 | No Change       | No Change        |
-|  3446 | Pleasant Lake      |          505 |          1977 | No Change       | Increasing       |
-|  3448 | Island Pond        |          341 |          1986 | No Change       | Increasing       |
-|  3694 | Panther Pond       |          461 |          1974 | No Change       | Increasing       |
-|  3696 | Crescent Lake      |          720 |          1974 | No Change       | No Change        |
-|  3708 | Crystal Lake       |          316 |          1974 | No Change       | Increasing       |
-|  3728 | Collins Pond       |          248 |          1975 | No Change       | Increasing       |
-|  9685 | Bay of Naples Lake |          377 |          1976 | No Change       | No Change        |
-|  3234 | Stearns Pond       |          720 |          1975 | Increasing      | Increasing       |
-|  3262 | Songo Pond         |          242 |          1974 | Increasing      | Increasing       |
-|  3390 | Coffee Pond        |          252 |          1974 | Increasing      | No Change        |
-|  3392 | Thomas Pond        |          547 |          1976 | Increasing      | Increasing       |
-|  3414 | Papoose Pond       |          267 |          1989 | Increasing      | No Change        |
-|  3416 | Keoka Lake         |          663 |          1977 | Increasing      | Increasing       |
-|  3418 | Long Pond          |          558 |          1978 | Increasing      | Increasing       |
-|  3452 | Crystal Lake       |          510 |          1972 | Increasing      | Increasing       |
-|  3454 | Highland Lake      |          497 |          1972 | Increasing      | Increasing       |
-|  3456 | Woods Pond         |          575 |          1972 | Increasing      | Increasing       |
-|  3458 | Otter Pond         |          174 |          1988 | Increasing      | No Change        |
-|  3700 | Sabbathday Lake    |          294 |          1975 | Increasing      | Increasing       |
-|  3706 | Notched Pond       |          339 |          1976 | Increasing      | Increasing       |
-|  3712 | Forest Lake        |          536 |          1974 | Increasing      | No Change        |
-|  3714 | Little Sebago Lake |         1194 |          1975 | Increasing      | Increasing       |
-|  5780 | Long Lake          |         1310 |          1976 | Increasing      | Increasing       |
-|  3228 | Duck Pond          |           NA |            NA | NA              | No Change        |
-|  3417 | Bog Pond           |           NA |            NA | NA              | No Change        |
+| Lake               | Observations | Earliest Data | Long Term Trend | Recent Trend |
+| :----------------- | :----------: | :-----------: | :-------------- | :----------- |
+| Adams Pond         |     432      |     1989      | No Change       | Increasing   |
+| Bay of Naples Lake |     377      |     1976      | No Change       | No Change    |
+| Bear Pond          |     480      |     1978      | No Change       | Increasing   |
+| Bog Pond           |      NA      |      NA       | NA              | No Change    |
+| Coffee Pond        |     252      |     1974      | Increasing      | No Change    |
+| Cold Rain Pond     |     491      |     1987      | No Change       | No Change    |
+| Collins Pond       |     248      |     1975      | No Change       | Increasing   |
+| Crescent Lake      |     720      |     1974      | No Change       | No Change    |
+| Crystal Lake       |     510      |     1972      | Increasing      | Increasing   |
+| Crystal Lake       |     316      |     1974      | No Change       | Increasing   |
+| Duck Pond          |      NA      |      NA       | NA              | No Change    |
+| Forest Lake        |     536      |     1974      | Increasing      | No Change    |
+| Foster Pond        |     671      |     1984      | No Change       | Declining    |
+| Highland Lake      |     497      |     1972      | Increasing      | Increasing   |
+| Highland Lake      |     859      |     1974      | Declining       | Increasing   |
+| Holt Pond          |      21      |     2000      | No Change       | No Change    |
+| Island Pond        |     341      |     1986      | No Change       | Increasing   |
+| Keoka Lake         |     663      |     1977      | Increasing      | Increasing   |
+| Little Moose Pond  |     313      |     1987      | No Change       | No Change    |
+| Little Sebago Lake |     1194     |     1975      | Increasing      | Increasing   |
+| Long Lake          |     1310     |     1976      | Increasing      | Increasing   |
+| Long Pond          |     558      |     1978      | Increasing      | Increasing   |
+| Notched Pond       |     339      |     1976      | Increasing      | Increasing   |
+| Otter Pond         |     174      |     1988      | Increasing      | No Change    |
+| Panther Pond       |     461      |     1974      | No Change       | Increasing   |
+| Papoose Pond       |     267      |     1989      | Increasing      | No Change    |
+| Parker Pond        |     209      |     1978      | No Change       | Declining    |
+| Peabody Pond       |     438      |     1976      | No Change       | Increasing   |
+| Pleasant Lake      |     505      |     1977      | No Change       | Increasing   |
+| Raymond Pond       |     238      |     1974      | Declining       | No Change    |
+| Sabbathday Lake    |     294      |     1975      | Increasing      | Increasing   |
+| Sebago Lake        |     1723     |     1970      | No Change       | Increasing   |
+| Songo Pond         |     242      |     1974      | Increasing      | Increasing   |
+| Stearns Pond       |     720      |     1975      | Increasing      | Increasing   |
+| Thomas Pond        |     547      |     1976      | Increasing      | Increasing   |
+| Tricky Pond        |     650      |     1976      | Declining       | No Change    |
+| Woods Pond         |     575      |     1972      | Increasing      | Increasing   |
 
-Relevant sample sizes and starting dates for Duchk andBog ponds are as
-follow3s:
+Relevant sample sizes and starting dates for Duck and Bog ponds are as
+follows:
 
 ``` r
 secchi_data %>%
@@ -1013,7 +1038,7 @@ secchi_data %>%
 
     ## # A tibble: 2 x 4
     ##   MIDAS Lake      FirstYear Samples
-    ##   <dbl> <fct>         <dbl>   <int>
+    ##   <dbl> <chr>         <dbl>   <int>
     ## 1  3228 Duck Pond      1988      11
     ## 2  3417 Bog Pond       2009       9
 
@@ -1032,23 +1057,21 @@ summary(m)
     ## 
     ## Residuals:
     ##       Min        1Q    Median        3Q       Max 
-    ## -0.026622 -0.011635 -0.001806  0.008937  0.061302 
+    ## -0.026428 -0.010649 -0.001484  0.008383  0.062982 
     ## 
     ## Coefficients:
-    ##              Estimate Std. Error t value Pr(>|t|)  
-    ## (Intercept)  0.030793   0.012685   2.427    0.021 *
-    ## Median      -0.003459   0.002062  -1.678    0.103  
+    ##              Estimate Std. Error t value Pr(>|t|)   
+    ## (Intercept)  0.033802   0.011635   2.905   0.0065 **
+    ## Median      -0.004010   0.001847  -2.171   0.0372 * 
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
-    ## Residual standard error: 0.01754 on 32 degrees of freedom
-    ## Multiple R-squared:  0.08086,    Adjusted R-squared:  0.05213 
-    ## F-statistic: 2.815 on 1 and 32 DF,  p-value: 0.1031
+    ## Residual standard error: 0.01738 on 33 degrees of freedom
+    ## Multiple R-squared:  0.125,  Adjusted R-squared:  0.09846 
+    ## F-statistic: 4.713 on 1 and 33 DF,  p-value: 0.03722
 
 So, the slopes tend to be SLIGHTLY lower for lakes with higher Median
 Secchi depth….
-
-Not sure what that means….
 
 ``` r
 ggplot(lt_results, aes(Median, TSSlope)) +
@@ -1058,7 +1081,7 @@ ggplot(lt_results, aes(Median, TSSlope)) +
 
     ## `geom_smooth()` using formula 'y ~ x'
 
-![](Secchi_Trend_Analysis_files/figure-gfm/unnamed-chunk-33-1.png)<!-- -->
+![](Secchi_Trend_Analysis_files/figure-gfm/unnamed-chunk-35-1.png)<!-- -->
 
 So if there is a relationship, it’s weak and predominately due to two
 lakes, so we won’t take it too seriously.
@@ -1084,7 +1107,7 @@ filter(MIDAS %in% RecentLakesMIDAS) %>%
 
     ## `geom_smooth()` using formula 'y ~ x'
 
-![](Secchi_Trend_Analysis_files/figure-gfm/unnamed-chunk-34-1.png)<!-- -->
+![](Secchi_Trend_Analysis_files/figure-gfm/unnamed-chunk-36-1.png)<!-- -->
 
 ``` r
 ggsave('figures/secchi_trends.pdf', device = cairo_pdf,
