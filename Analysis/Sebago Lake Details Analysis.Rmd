@@ -1,0 +1,190 @@
+---
+title: "Compare Versions of Sebago Lake Data"
+author:  "Curtis C. Bohlen, Casco Bay Estuary Partnership"
+date: "11/29/2020"
+output:
+  github_document:
+    toc: true
+    fig_width: 7
+    fig_height: 5
+---
+
+<img
+  src="https://www.cascobayestuary.org/wp-content/uploads/2014/04/logo_sm.jpg"
+  style="position:absolute;top:10px;right:50px;" />
+
+
+# Introduction
+Sebago lake is our region's largest lake, and one of the most important.  it is 
+a crucial recreational resource for the region, and also provides high qUality
+drinking water for tens of thousands.
+
+Not coincidentally, Sebago Lake also has one of the longest and riches records of water quality monitoting of any lake in the region.
+
+Here we leverage that rich data to look a bit more closely at how
+water clarity varies in space and time.
+
+# Load Libraries
+```{r}
+library(readxl)
+#library(readr)
+library(tidyverse)
+
+library(mgcv)
+
+library(CBEPgraphics)
+load_cbep_fonts()
+theme_set(theme_cbep())
+```
+
+# Load Data
+## Folder References
+```{r}
+sisterfldnm <- 'Derived_Data'
+parent <- dirname(getwd())
+sister <- file.path(parent,sisterfldnm)
+```
+
+## Read Parsed Lakes Data and Limit to Sebago Lake 
+```{r}
+fn <- 'Secchi.csv'
+Secchi <- read_csv(file.path(sister, fn)) %>%
+  filter(MIDAS == 5786) %>%
+  mutate(Year = as.numeric(format(Date, format = '%Y')))
+```
+We remove two values from the Sebago Lake record.
+```{r}
+Secchi <- Secchi %>%
+  filter( ! (MIDAS == 5786 & Station == 50))
+```
+
+## Read PWD Sebago Lakes Secchi Depth Data
+```{r}
+fn <- 'Secchi_Sebago.csv'
+Secchi_Sebago <- read_csv(file.path(sister, fn))
+```
+
+```{r}
+secchi_sebago_data <- Secchi %>%
+  select(-c(Secchi_On_Bottom:Cloud_Cover)) %>%
+  bind_rows(Secchi_Sebago)
+```
+
+```{r}
+rm(Secchi, Secchi_Sebago)
+```
+
+## Read Station - Region Association
+```{r}
+fn <- 'Sample Point Distances and Regions.xlsx'
+regions <- read_excel(file.path(sister, fn), sheet = 'Sample_Locations') %>%
+  select(Station, Region)
+```
+
+## Add Regions to Data
+```{r}
+secchi_sebago_data <- secchi_sebago_data %>%
+  left_join(regions, by = 'Station') %>%
+  filter(! is.na(Region)) %>%
+  mutate(Region = factor(Region))
+```
+
+```{r}
+rm(regions)
+```
+
+# Temporal Patterns
+```{r}
+ggplot(secchi_sebago_data, aes(Year, Secchi_Depth)) +
+  geom_point(aes(color = Region)) +
+  geom_smooth( se = FALSE) +
+  facet_wrap(~Region) +
+  theme_cbep(base_size = 12) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.25))
+```
+
+There are clear patterns there that we do not want to assume are chance, due to
+the large number of samples involved, but trends are not consistent across
+regions (or, presumably, across Stations).
+
+Note that Big Bay North,  Big Bay West, and South Central have limited samples
+from the last 10 years or so, While Jordan Bay has little data from before 1990.
+We may want to limit data at some point to simplify analyses.
+
+# Analysis Logic
+We are interested in looking at smothed temporal trends, so we are probably
+looking at using a GAM model or a GAMM model ifwe want to explicitly model
+stations as random factors.  hat feels unnecessary for a preliminary analysis.
+
+```{r}
+the_gam <- gam(Secchi_Depth ~ Region + s(Year, by = Region), 
+               data = secchi_sebago_data)
+summary(the_gam)
+```
+
+```{r}
+plot(the_gam, shade = TRUE, pages = 1, scale = 0)
+```
+Some of those extreme values make no sense in this context, so something's not
+working at the limits.
+
+
+# Reduced Data for Simplicity
+```{r}
+reduced_data <- secchi_sebago_data %>%
+  filter(Year > 1989, ! Region %in% c('Big Bay North',
+                                      'Big Bay West',
+                                      'South Central'))
+```
+
+
+```{r}
+reduced_gam <- gam(Secchi_Depth ~ Region + 0 + s(Year, by = Region), 
+               data = reduced_data)
+summary(reduced_gam)
+```
+
+```{r}
+plot(reduced_gam, se = TRUE, shade = TRUE, pages = 1)
+```
+Now THAT looks more informative.  Lake wide, there have been periods of better
+or worse water clarity, especially around 1990 to 2002 or so.  Since 2006,
+clarity has gradually improved.  It is actually pretty remarkable that results
+are so consistent across the lake.
+
+the GGPLOT default smoothers missom of thies detail, because they oversmooth.
+```{r}
+ggplot(reduced_data, aes(Year, Secchi_Depth)) +
+  geom_point(aes(color = Region)) +
+  geom_smooth( se = FALSE) +
+  facet_wrap(~Region) +
+  theme_cbep(base_size = 12) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.25))
+```
+
+# Spatial Variation?
+Without going to the extreme of using geospatial methods, the easiest way to get
+a feel for variability associated with location is by looking at ANOVAs.
+```{r}
+the_lm <- lm(Secchi_Depth ~ factor(Station) + factor(Year), data = secchi_sebago_data)
+anova(the_lm)
+```
+So, the mean square error of the residuals is small compared to station or Year
+factors, but the model is unbalanced, so this needs to be interpreted with care.
+If we reverse the order of fit, more of the variance is explained by Year, and
+less by Station.
+
+```{r}
+the_lm <- lm(Secchi_Depth ~ factor(Year) + factor(Station),
+             data = secchi_sebago_data)
+anova(the_lm)
+```
+```{r}
+the_lm <- lm(Secchi_Depth ~ factor(Year) + Region + factor(Station),
+             data = secchi_sebago_data)
+anova(the_lm)
+```
+
+
+
+

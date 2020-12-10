@@ -93,7 +93,6 @@ small parts of larger basins.
 *  Unnamed Pond, Cape Elizabeth, MIDAS 8899. This is part of the stream channel
    heading to Great Pond, in marsh area.  Dropped.  
 
-
 ## Final Lakes and Ponds Data
 Finally, we joined the attribute table based on MIDAS numbers with the
 CB_Lakes attribute table, and saved the joined table as `CB_Ponds_MIDAS_Final`
@@ -152,8 +151,6 @@ Finally, we deleted records with duplicate MIDAS numbers, selecting
 The point that corresponds to the largest contiguous pond area and deleting
 others.  We edited the Notes field to indicate what we did.
 
-
-
 # Considerations for Further Data Organization
 The downloaded lakes data has essentially three types of data:
 1.  Lake identification, location, and Morphometry, which is lake specific and
@@ -171,3 +168,13 @@ So this suggests we want to reorganize the data into four tables, as follows:
 *  Secchi
 *  Temp and DO
 *  All Other Observations
+
+## Sebago Lake Sampling Locations
+We used ArcGIS to transfer positions of sampling Stations from DEP and PWD maps
+to GIS, using standard methods for georeferencing images. Once approximate
+Station positions were transferred to ArcGIS, we calculated a distance matrix,
+in meters and kilometers, describing distances among all sampling locations.  We
+reordered that matrix in Excel to identify sampling Regions, where Stations are
+all within five kilometers of each other. Distance matrix and assignment
+to regions are available here via an excel file:  
+'Sample Point Distances and Regions.xlsx'.

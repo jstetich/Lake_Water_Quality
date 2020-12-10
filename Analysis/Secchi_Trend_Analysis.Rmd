@@ -137,7 +137,7 @@ secchi_data <- secchi_data %>%
   bind_rows(secchi_sebago_data)
 ```
 
-We remove two values from the Sebago Lake record.
+We remove three values from the Sebago Lake record.
 ```{r}
 secchi_data <- secchi_data %>%
   filter( ! (MIDAS == 5786 & Station == 50))
