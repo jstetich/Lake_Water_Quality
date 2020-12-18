@@ -13,17 +13,12 @@ Curtis C. Bohlen, Casco Bay Estuary Partnership
       - [Reviewing the Source](#reviewing-the-source)
       - [Carlson TSI Functions](#carlson-tsi-functions)
   - [Taylor Pond Example](#taylor-pond-example)
-  - [Load TSI Data](#load-tsi-data)
+  - [Load Maine Lakes Anual TSI Data](#load-maine-lakes-anual-tsi-data)
   - [TSI Data Availability](#tsi-data-availability)
   - [Correlations Among TSI Scores](#correlations-among-tsi-scores)
   - [Preliminary Graphics](#preliminary-graphics)
-  - [TSI<sub>Secchi</sub> Graphic](#tsisecchi-graphic)
+      - [TSI<sub>Secchi</sub> Graphic](#tsisecchi-graphic)
       - [Grouped Graphic](#grouped-graphic)
-  - [Analyse TSI formulae](#analyse-tsi-formulae)
-      - [Plot Data Versus Calculated versions from Maine
-        Lakes](#plot-data-versus-calculated-versions-from-maine-lakes)
-          - [Secchi Depth](#secchi-depth)
-          - [Total Phosphorus](#total-phosphorus)
       - [Comparison of Maine and Carson TSI
         Formulae](#comparison-of-maine-and-carson-tsi-formulae)
           - [Secchi Depth TSI](#secchi-depth-tsi)
@@ -44,7 +39,7 @@ TSI data to consider whether to include data or graphics on TSI in State
 of the Bay.
 
 Ultimately, we decide there is little value to adding a TSI metric to
-SoCB, as the the most abundant TSI value is based oon Secchi Depth, and
+SoCB, as the the most abundant TSI value is based on Secchi Depth, and
 is a relatively simple transform of the Secchi depth data we have
 already considered.
 
@@ -130,7 +125,7 @@ formulae are used to calculating the indexes or not.
 
 Multiple references indicate Maine developed its own TSI scales, so we
 can not simply use any TSI index. Unfortunately, published versions of
-the Maine indexes have problems that took us some time to unravel. We
+the Maine indexes have ambiguities that took us some time to unravel. We
 present definitions here, and show how the definitions relate to Maine
 DEP’s TSI data at the end of this Notebook.
 
@@ -165,7 +160,8 @@ appears to be the following (**THIS IS INCORRECT**):
     ```
 
 The regulations are ambiguous regarding the base of the logarithms used
-to calculate these formulae.
+to calculate these formulae. We eventually figured out that we could
+match published data values if we used the log base 10.
 
 We could not use the Secchi formula from this source to recreate TSI
 numbers from the Maine Lakes data, so we kept hunting for additional
@@ -186,15 +182,14 @@ different formula for the TSI based on Secchi Depth:
           [$TSI = 70 \space log(\frac{105}{(\text{mean Secchi Depth})^2} + 0.7)$]
     ```
 
-We were able to duplicate values for published data using this formula,
-so we consider it correct.
+We were able to duplicate values for published data using this formula
+(with log bse 10) , so we consider it correct.
 
 # Other Versions of TSI
 
 Multiple references indicate Maine developed its own TSI scales, so we
 can not simply use of other TSI indexes, but calculating them may be
-useful for comparison purposes, and examining their form may help
-determine how the Maine formulae have gone awry.
+useful for comparison purposes.
 
 ## NALMS document
 
@@ -222,7 +217,9 @@ with an index using Secchi Depth as the basic observation. He then
 developed related indexes for Chl and TP using regression relationships
 among chlorophyll, total phosphorus, and Secchi depth. Unfortunately,
 that means there is no unambiguous way to extrapolate from Carlson’s TSI
-formulae to Maine’s formulae.
+formulae to Maine’s formulae. Maine’s indexes could be – perhaps even
+should be – based on different regression relationships and specific
+Maine policy goals.
 
 \#TSI Functions in R \#\# Maine TSI Functions We can embody these
 formulae in a small R functions.
@@ -247,6 +244,8 @@ return(tsi)
 
 ## Carlson TSI Functions
 
+Note, these use natural logarithmns.
+
 ``` r
 tsi_sd_carlson <- function(sec) {
 tsi <- 60 - 14.41 * log(sec)
@@ -266,10 +265,11 @@ return(tsi)
 
 # Taylor Pond Example
 
-There appears to be some inconsistency in Maine over TSI formulae. For
-example, the [Taylor Pond Association website](http://taylorpond.org/)
-provides the Carlson version of the formulae (as rewritten by NALMA) for
-calculating TSI based on Secchi depth and Total Phosphorus.
+There appears to be some inconsistency in Maine over use of the Maine
+TSI formulae. For example, the [Taylor Pond Association
+website](http://taylorpond.org/) provides the Carlson version of the
+formulae (as rewritten in log-linear form) for calculating TSI based on
+Secchi depth and Total Phosphorus.
 
 For 2020, Taylor Pond Association reports \[TP_{\text{core}} = 11.0\\
   TP_{\text{bottom}} = 17.5 \\
@@ -288,7 +288,7 @@ cat(paste('Carlson:', round(tsi_sd_carlson(5.35),2)))
 #> Carlson: 35.83
 ```
 
-# Load TSI Data
+# Load Maine Lakes Anual TSI Data
 
 ``` r
 fn <- 'Annual_Means.csv'
@@ -340,19 +340,33 @@ tsi_data %>%
 #> # ... with 29 more rows
 ```
 
-So, Tsi\_Sec is by far the most abundant estimate of TSI.
-Chlorophyll-based and phosphorus-based TSI values are somewhat less
-abundant, but still fairly common. Only one lake, Woods Pond, lacks data
-on trophic index based on secchi depth, but has a substantial record of
-trophic index estimates based on another parameter.
+Tsi\_Sec is the most abundant estimate of TSI. Chlorophyll-based and
+phosphorus-based TSI values are somewhat less abundant, but still fairly
+common. Only one lake, Woods Pond, lacks data on trophic index based on
+Secchi depth, but has a substantial record of trophic index estimates
+based on another parameter.
+
+Several references discuss which TSI to use when several are available.
+Since the TSI is an estimate of phytoplankton biomass, several emphasize
+the Chlorophyll A based version, as chlorophyll is a fairly direct
+estimator of biomass. However, there is a balance here between relying
+on the BEST estimator, and relying on the estimator for which we have
+the most data.  
+Unfortunately, there is nothing in the data we have available that
+suggests the different TSI metrics are unbiased estimators of one
+another. We take a closer look.
 
 # Correlations Among TSI Scores
+
+We add a red 1:1 line to help visualize relationships. REgression lines
+would be biased downwards due to error in measuring x axis values, so
+are less useful for assessing bias here.
 
 ``` r
 lowerfun <- function(data,mapping){
   ggplot(data = data, mapping = mapping)+
     geom_point()+
-    geom_abline(slope = 1, intercept =0, color = 'red')
+    geom_abline(slope = 1, intercept =0, color = 'red', lty = 2)
 }
 
 plt <- tsi_data %>%
@@ -386,12 +400,13 @@ plt
 
 <img src="Lakes_TSI_files/figure-gfm/unnamed-chunk-8-1.png" style="display: block; margin: auto;" />
 So Tsi\_Sec and Tsi\_Chl are fairly well correlated, with a slope close
-to 1:1. Tsi\_Tpec appears to be almost as well correlated with the other
-indexes, but
+to 1:1. Tsi\_Tpec appears to be almost, but not quite as well correlated
+with the other indexes. Data is too sparse to assess the other
+phosphorus-based index.
 
 # Preliminary Graphics
 
-# TSI<sub>Secchi</sub> Graphic
+## TSI<sub>Secchi</sub> Graphic
 
 We need to create a reordered version of the Lake Names, and for some
 reason, the usual `fct_reorder()` function was not behaving as expected,
@@ -461,80 +476,18 @@ tsi_long %>%
 
 <img src="Lakes_TSI_files/figure-gfm/unnamed-chunk-12-1.png" style="display: block; margin: auto;" />
 
-# Analyse TSI formulae
-
-## Plot Data Versus Calculated versions from Maine Lakes
-
-The Maine formulae are all correct, using base 10 logarithms.
-
-``` r
-tmp <- tsi_data %>%
-  mutate(recalc_sec = tsi_sd_maine(Mean_Sec),
-         recalc_chl = tsi_chl_maine(Mean_Chla),
-         recalc_tp  = tsi_tp_maine(Tphos_Ec))
-```
-
-### Secchi Depth
-
-Our Maine Secchi Depth function is correct.
-
-``` r
-ggplot(tmp, aes(x = Tsi_Sec, y = recalc_sec) ) +
-  geom_point() +
-  geom_abline(slope = 1, intercept = 0, lty = 2) +
-  geom_smooth(method = 'lm', se = FALSE) +
-  ylab('TSI From Formula') +
-  xlab('TSI From Data')
-#> `geom_smooth()` using formula 'y ~ x'
-#> Warning: Removed 34 rows containing non-finite values (stat_smooth).
-#> Warning: Removed 34 rows containing missing values (geom_point).
-```
-
-<img src="Lakes_TSI_files/figure-gfm/unnamed-chunk-14-1.png" style="display: block; margin: auto;" />
-\#\#\# Chlorophyll A
-
-``` r
-ggplot(tmp, aes(x = Tsi_Chl, y = recalc_chl) ) +
-  geom_point() +
-  geom_abline(slope = 1, intercept = 0, lty = 2) +
-  geom_smooth(method = 'lm')+
-  ylab('TSI From Formula') +
-  xlab('TSI From Data')
-#> `geom_smooth()` using formula 'y ~ x'
-#> Warning: Removed 648 rows containing non-finite values (stat_smooth).
-#> Warning: Removed 648 rows containing missing values (geom_point).
-```
-
-<img src="Lakes_TSI_files/figure-gfm/unnamed-chunk-15-1.png" style="display: block; margin: auto;" />
-
-### Total Phosphorus
-
-``` r
-ggplot(tmp, aes(x = Tsi_Tpec, y = recalc_tp) ) +
-  geom_point() +
-  geom_abline(slope = 1, intercept = 0, lty = 2) +
-  geom_smooth(method = 'lm')+
-  ylab('TSI From Formula') +
-  xlab('TSI From Data')
-#> `geom_smooth()` using formula 'y ~ x'
-#> Warning: Removed 682 rows containing non-finite values (stat_smooth).
-#> Warning: Removed 682 rows containing missing values (geom_point).
-```
-
-<img src="Lakes_TSI_files/figure-gfm/unnamed-chunk-16-1.png" style="display: block; margin: auto;" />
-
 ## Comparison of Maine and Carson TSI Formulae
 
 Here we compare results over reasonable ranges of Secchi Depth,
 chlorophyll, and Total Phosphorus, and show that result are slightly
-different, but consistent. THe Maine formulae give slightly steeper
+different, but consistent. The Maine formulae give slightly steeper
 increases in TSI as the values of the drivers change. The two formulae
-give similar values for \* $ SD 7$ \* $ Chl<sub>a</sub> 3.5$ \* $ TP 6$
+give similar values at: \* $ SD 7$ \* $ Chl<sub>a</sub> 3.5$ \* $ TP 6$
 
 ##### Secchi Depth TSI
 
-We reverse the X axis so this plot to visually aligns with the other
-two, with “better” conditions to the right.
+We reverse the X axis so this plot visually aligns with the other two,
+with “better” conditions to the right.
 
 ``` r
 ggplot(tibble(x = seq(1.5, 10, 0.25)), aes(x = x)) +
@@ -548,7 +501,7 @@ ggplot(tibble(x = seq(1.5, 10, 0.25)), aes(x = x)) +
 #> Warning: Removed 6 row(s) containing missing values (geom_path).
 ```
 
-<img src="Lakes_TSI_files/figure-gfm/unnamed-chunk-17-1.png" style="display: block; margin: auto;" />
+<img src="Lakes_TSI_files/figure-gfm/unnamed-chunk-13-1.png" style="display: block; margin: auto;" />
 
 ##### CHl TSI
 
@@ -567,7 +520,7 @@ ggplot(tibble(x = seq(1, 15, 0.25)), aes(x = x)) +
   scale_y_continuous(limits = c(0,100))
 ```
 
-<img src="Lakes_TSI_files/figure-gfm/unnamed-chunk-18-1.png" style="display: block; margin: auto;" />
+<img src="Lakes_TSI_files/figure-gfm/unnamed-chunk-14-1.png" style="display: block; margin: auto;" />
 
 ##### TP TSI
 
@@ -586,4 +539,4 @@ ggplot(tibble(x = seq(1, 50, 0.25)), aes(x = x)) +
   scale_y_continuous(limits = c(0,100))
 ```
 
-<img src="Lakes_TSI_files/figure-gfm/unnamed-chunk-19-1.png" style="display: block; margin: auto;" />
+<img src="Lakes_TSI_files/figure-gfm/unnamed-chunk-15-1.png" style="display: block; margin: auto;" />
