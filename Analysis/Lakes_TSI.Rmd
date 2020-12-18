@@ -233,7 +233,7 @@ cat(paste('Maine:  ',round(tsi_sd_maine(5.35),2),'\n'))
 cat(paste('Carlson:', round(tsi_sd_carlson(5.35),2)))
 ```
 
-# Load Maine Lakes Anual TSI Data
+# Load Maine Lakes Annual TSI Data
 ```{r}
 fn <- 'Annual_Means.csv'
 annual_data <- read_csv(file.path(sibling, fn))

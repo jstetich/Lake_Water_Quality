@@ -13,7 +13,8 @@ Curtis C. Bohlen, Casco Bay Estuary Partnership
       - [Reviewing the Source](#reviewing-the-source)
       - [Carlson TSI Functions](#carlson-tsi-functions)
   - [Taylor Pond Example](#taylor-pond-example)
-  - [Load Maine Lakes Anual TSI Data](#load-maine-lakes-anual-tsi-data)
+  - [Load Maine Lakes Annual TSI
+    Data](#load-maine-lakes-annual-tsi-data)
   - [TSI Data Availability](#tsi-data-availability)
   - [Correlations Among TSI Scores](#correlations-among-tsi-scores)
   - [Preliminary Graphics](#preliminary-graphics)
@@ -288,7 +289,7 @@ cat(paste('Carlson:', round(tsi_sd_carlson(5.35),2)))
 #> Carlson: 35.83
 ```
 
-# Load Maine Lakes Anual TSI Data
+# Load Maine Lakes Annual TSI Data
 
 ``` r
 fn <- 'Annual_Means.csv'
