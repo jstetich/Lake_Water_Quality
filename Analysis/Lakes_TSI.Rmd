@@ -1,7 +1,7 @@
 ---
-title: "Graphics For Recent Lake Secchi Depths"
+title: "Assess Trophic State Index for Use in SoCB 2020"
 author:  "Curtis C. Bohlen, Casco Bay Estuary Partnership"
-date: "11/29/2020"
+date: "12/18/2020"
 output:
   github_document:
     toc: true

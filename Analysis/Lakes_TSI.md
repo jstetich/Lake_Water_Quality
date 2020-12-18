@@ -1,7 +1,7 @@
-Graphics For Recent Lake Secchi Depths
+Assess Trophic State Index for Use in SoCB 2020
 ================
 Curtis C. Bohlen, Casco Bay Estuary Partnership
-11/29/2020
+12/18/2020
 
   - [Introduction](#introduction)
   - [Load Libraries](#load-libraries)
