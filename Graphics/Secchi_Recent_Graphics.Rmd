@@ -269,7 +269,7 @@ plt <- secchi_data %>%
                fun.max = function(.x) {
                  median(.x, na.rm= TRUE) + mad(.x, na.rm = FALSE) }) + 
 
-  ylab('Median Secchi Depth (m)') +
+  ylab('Secchi Depth (m)') +
   xlab('') +
   
   theme_cbep(base_size = 12) +
@@ -292,7 +292,7 @@ plt <- secchi_data %>%
   stat_summary(geom = 'point', fun = median,
              pch = 19) +
   
-  ylab('Median Secchi Depth (m)') +
+  ylab('Secchi Depth (m)') +
   xlab('') +
   
   theme_cbep(base_size = 12) +
@@ -304,7 +304,11 @@ ggsave('figures/current_secchi_violin.pdf', device = cairo_pdf,
 ```
 
 # Correlations Between Secchi Depth and Lake Morphology
-We can compare recent median water clarity to potential explanatory morphometric variables.
+We can compare recent median water clarity to potential explanatory morphometric
+variables. To do so, we assemble a data set contianing morphometric data for 
+our lakes, and add to it median Secchi depths based on observations from the
+past 10 years.
+
 ```{r}
 tmp <- morpho.data %>%
   filter(MIDAS %in% RecentLakesMIDAS) %>%
@@ -322,13 +326,13 @@ cor(tmp$Median, tmp[,2:12], use = 'pairwise', method='spearman')
 cat('\n\nKendall\n')
 cor(tmp$Median, tmp[,2:12], use = 'pairwise', method='kendall')
 ```
-Basically, that shows:  
+BThat shows:  
 
-1.  larger lakes, especially deeper lakes, have clearer water, but the
+1.  Larger lakes, especially deeper lakes, have clearer water, but the
     relationships are not simply linear, or the Pearson and Spearman
     Coefficients would be more similar.  
 2.  Lakes with higher flushing rates tend to have poorer water clarity. That
-    probably reflect the fact that smaller lakes have smaller volumes, and thus
+    probably reflects the fact that smaller lakes have smaller volumes, and thus
     higher flushing rates.  
 
 # Showing Relationships Graphically
