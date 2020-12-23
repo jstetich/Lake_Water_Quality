@@ -39,14 +39,14 @@ Curtis C. Bohlen, Casco Bay Estuary Partnership
 library(tidyverse)
 ```
 
-    ## -- Attaching packages ----------------------------------------------------------------------------------- tidyverse 1.3.0 --
+    ## -- Attaching packages --------------------------------------- tidyverse 1.3.0 --
 
     ## v ggplot2 3.3.2     v purrr   0.3.4
-    ## v tibble  3.0.3     v dplyr   1.0.2
+    ## v tibble  3.0.4     v dplyr   1.0.2
     ## v tidyr   1.1.2     v stringr 1.4.0
-    ## v readr   1.3.1     v forcats 0.5.0
+    ## v readr   1.4.0     v forcats 0.5.0
 
-    ## -- Conflicts -------------------------------------------------------------------------------------- tidyverse_conflicts() --
+    ## -- Conflicts ------------------------------------------ tidyverse_conflicts() --
     ## x dplyr::filter() masks stats::filter()
     ## x dplyr::lag()    masks stats::lag()
 
@@ -84,7 +84,8 @@ dir.create(file.path(getwd(), 'figures'), showWarnings = FALSE)
 secchi_data <- read_csv(file.path(sibling, fn))
 ```
 
-    ## Parsed with column specification:
+    ## 
+    ## -- Column specification --------------------------------------------------------
     ## cols(
     ##   MIDAS = col_double(),
     ##   Lake = col_character(),
@@ -183,7 +184,8 @@ fn <- 'Secchi_Sebago.csv'
 secchi_sebago_data <- read_csv(file.path(sibling, fn))
 ```
 
-    ## Parsed with column specification:
+    ## 
+    ## -- Column specification --------------------------------------------------------
     ## cols(
     ##   MIDAS = col_double(),
     ##   Lake = col_character(),
@@ -223,7 +225,8 @@ fn <- 'Lake_Morphometry_Metric.csv'
 morpho.data <- read_csv(file.path(sibling, fn))
 ```
 
-    ## Parsed with column specification:
+    ## 
+    ## -- Column specification --------------------------------------------------------
     ## cols(
     ##   .default = col_double(),
     ##   Lake = col_character(),
@@ -239,8 +242,7 @@ morpho.data <- read_csv(file.path(sibling, fn))
     ##   Invasives = col_character(),
     ##   Fishery = col_character()
     ## )
-
-    ## See spec(...) for full column specifications.
+    ## i Use `spec()` for the full column specifications.
 
 ``` r
 #rm(fn,parent,sibfldnm,sibling)
@@ -270,7 +272,7 @@ secchi_data %>%
   ggtitle('Recent Secchi Depth Data')
 ```
 
-![](Secchi_Recent_Graphics_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
+![](Secchi_Recent_Graphics_files/figure-gfm/data_by_year_1-1.png)<!-- -->
 
 ``` r
 secchi_data %>%
@@ -292,7 +294,7 @@ secchi_data %>%
   ggtitle('Recent Secchi Depth Data')
 ```
 
-![](Secchi_Recent_Graphics_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
+![](Secchi_Recent_Graphics_files/figure-gfm/data_by_year_2-1.png)<!-- -->
 
 ``` r
 ggsave('figures/current_secchi_data_availability.pdf', device = cairo_pdf, width = 7, height = 8)
@@ -403,7 +405,7 @@ plt <- secchi_data %>%
 plt
 ```
 
-![](Secchi_Recent_Graphics_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
+![](Secchi_Recent_Graphics_files/figure-gfm/Secchi_bar_chart-1.png)<!-- -->
 
 ``` r
 ggsave('figures/current_secchi_bar.pdf', device = cairo_pdf,
@@ -432,7 +434,7 @@ plt <- secchi_data %>%
 plt
 ```
 
-![](Secchi_Recent_Graphics_files/figure-gfm/unnamed-chunk-16-1.png)<!-- -->
+![](Secchi_Recent_Graphics_files/figure-gfm/secchi_violin_plot-1.png)<!-- -->
 
 ``` r
 ggsave('figures/current_secchi_violin.pdf', device = cairo_pdf,
@@ -540,7 +542,7 @@ plt
 
     ## Warning: Removed 3 rows containing missing values (geom_point).
 
-![](Secchi_Recent_Graphics_files/figure-gfm/unnamed-chunk-18-1.png)<!-- -->
+![](Secchi_Recent_Graphics_files/figure-gfm/Secchi_and_morphometrics_graphic-1.png)<!-- -->
 
 ``` r
   rm(tmp3)
@@ -596,7 +598,7 @@ oldpar <- par(mfrow = c(2,2))
 plot(the_lm)
 ```
 
-![](Secchi_Recent_Graphics_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
+![](Secchi_Recent_Graphics_files/figure-gfm/regression_analytics-1.png)<!-- -->
 
 ``` r
 par(oldpar)
@@ -648,7 +650,7 @@ oldpar <- par(mfrow = c(2,2))
 plot(the_log_lm)
 ```
 
-![](Secchi_Recent_Graphics_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
+![](Secchi_Recent_Graphics_files/figure-gfm/regression_analytics_2-1.png)<!-- -->
 
 ``` r
 par(oldpar)
@@ -701,7 +703,7 @@ oldpar <- par(mfrow = c(2,2))
 plot(weighted_log_lm)
 ```
 
-![](Secchi_Recent_Graphics_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
+![](Secchi_Recent_Graphics_files/figure-gfm/regression_analytics_3-1.png)<!-- -->
 
 ``` r
 par(oldpar)
@@ -739,7 +741,7 @@ ggplot(tmp, aes(D_Mean_m, Median)) +
 
     ## Warning: Removed 1 rows containing missing values (geom_point).
 
-![](Secchi_Recent_Graphics_files/figure-gfm/unnamed-chunk-25-1.png)<!-- -->
+![](Secchi_Recent_Graphics_files/figure-gfm/compare_log_regressions_graphic-1.png)<!-- -->
 
 ``` r
 rm(df)
@@ -774,7 +776,7 @@ plt
 
     ## Warning: Removed 1 rows containing missing values (geom_point).
 
-![](Secchi_Recent_Graphics_files/figure-gfm/unnamed-chunk-26-1.png)<!-- -->
+![](Secchi_Recent_Graphics_files/figure-gfm/secchi_depth_graphic-1.png)<!-- -->
 
 ``` r
 ggsave('figures/current_secchi_by_depth.pdf', device = cairo_pdf,
@@ -806,4 +808,4 @@ plt
 
     ## Warning: Removed 1 rows containing missing values (geom_point).
 
-![](Secchi_Recent_Graphics_files/figure-gfm/unnamed-chunk-27-1.png)<!-- -->
+![](Secchi_Recent_Graphics_files/figure-gfm/secchi_by_location-1.png)<!-- -->

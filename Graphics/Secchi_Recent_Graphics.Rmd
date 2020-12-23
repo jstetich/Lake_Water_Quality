@@ -139,7 +139,7 @@ morpho.data <- read_csv(file.path(sibling, fn))
 
 ## Lakes With Sufficient Data
 ### Graphic of Data by Year
-```{r fig.height = 7, fig.width = 6}
+```{r data_by_year_1, fig.height = 7, fig.width = 6}
 secchi_data %>%
   group_by(MIDAS, Year) %>%
   summarize(Lake = first(Lake),
@@ -160,7 +160,7 @@ secchi_data %>%
 
 ```
 
-```{r fig.height = 6.5, fig.width = 6}
+```{r data_by_year_2, fig.height = 6.5, fig.width = 6}
 secchi_data %>%
   group_by(MIDAS, Year) %>%
   summarize(Lake = first(Lake),
@@ -258,7 +258,7 @@ statistic of location for these data.
 ## Bar Chart
 This first plot is a simple bar chart of Median Secchi depths +/- one median absolute deviation, observed over past 10 years.
 
-```{r fig.height = 6, fig.width = 5}
+```{r Secchi_bar_chart, fig.height = 6, fig.width = 5}
 plt <- secchi_data %>%
   filter( MIDAS %in% RecentLakesMIDAS) %>%
   ggplot(aes(fct_reorder(Lake, Secchi_Depth), Secchi_Depth)) + 
@@ -283,7 +283,7 @@ ggsave('figures/current_secchi_bar.pdf', device = cairo_pdf,
 
 ## Violin Plot
 This second plot is a violin plot alternative
-```{r fig.height = 6, fig.width = 5}
+```{r secchi_violin_plot, fig.height = 6, fig.width = 5}
 plt <- secchi_data %>%
   filter(MIDAS %in% RecentLakesMIDAS) %>%
   
@@ -332,7 +332,7 @@ Basically, that shows:
     higher flushing rates.  
 
 # Showing Relationships Graphically
-```{r}
+```{r Secchi_and_morphometrics_graphic}
 tmp2 <- tmp %>% select(Area_sq_m, Perim_km,
                        D_Mean_m, D_Max_m,
                        Flushes_p_yr, Median, Samples)%>%
@@ -358,12 +358,12 @@ good, with the two measures of depth the best fit.
 
 ## Water Clarity and  Mean Depth
 ### Linear Regression
-```{r}
+```{r secchi_and_depth_regression}
 the_lm <- lm(Secchi~ DAvg, data = tmp2)
 summary(the_lm)
 anova(the_lm)
 ```
-```{r}
+```{r regression_analytics}
 oldpar <- par(mfrow = c(2,2))
 plot(the_lm)
 par(oldpar)
@@ -372,12 +372,12 @@ par(oldpar)
 Lake 36, Sebago Lake, is a outlier, high leverage, and high Cook's Distance.
 This is not an especially good  model.
 
-```{r}
+```{r secchi_log_depth_regression}
 the_log_lm <- lm(Secchi~ log(DAvg), data = tmp2)
 summary(the_log_lm)
 anova(the_log_lm)
 ```
-```{r}
+```{r  regression_analytics_2}
 oldpar <- par(mfrow = c(2,2))
 plot(the_log_lm)
 par(oldpar)
@@ -387,12 +387,12 @@ Sebago is still somewhat of an outlier, but Cook's Distance is under 0.5,
 and leverage is half as large, so this is a more reasonable model. The model
 fits the smaller lakes substantially better.
 
-```{r}
+```{r weighted_log_regression}
 weighted_log_lm <- lm(Secchi~ log(DAvg), weights = sqrt(Samples), data = tmp2)
 summary(weighted_log_lm)
 anova(weighted_log_lm)
 ```
-```{r}
+```{r regression_analytics_3}
 oldpar <- par(mfrow = c(2,2))
 plot(weighted_log_lm)
 par(oldpar)
@@ -408,7 +408,7 @@ The weighted log analysis does the best job addressing Sebago Lake, but
 the different fits provide similar predictions.
 
 We can compare predictions for the two log regressions as follows:
-```{r}
+```{r compare_log_regressions_graphic}
 df <- tibble(DAvg = 1:32)
 df <- df %>%
   mutate(pred_log = predict(the_log_lm, newdata = df),
@@ -434,7 +434,7 @@ regression would require more explanation, without changing meaning.  In the
 interest of parsimony, we chose to chose to present the unweighted model.
 
 ### Related Plot 
-```{r, fig.width = 5, fig.height = 3}
+```{r secchi_depth_graphic, fig.width = 5, fig.height = 3}
 plt <- ggplot(tmp, aes(D_Mean_m, Median)) +
   geom_point(size=3, color = cbep_colors()[1]) +
   geom_smooth(method = 'lm', se = FALSE, color = cbep_colors()[1]) +
@@ -451,7 +451,7 @@ width = 5, height = 3)
 ```
 
 ## Secchi by Location (and Depth)
-```{r}
+```{r secchi_by_location}
 plt <- tmp %>% 
   ggplot(aes(Easting,Northing, color = Median)) + 
   geom_point(aes(size=D_Mean_m)) +
