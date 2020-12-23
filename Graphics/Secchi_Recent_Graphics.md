@@ -395,7 +395,7 @@ plt <- secchi_data %>%
                fun.max = function(.x) {
                  median(.x, na.rm= TRUE) + mad(.x, na.rm = FALSE) }) + 
 
-  ylab('Median Secchi Depth (M)') +
+  ylab('Median Secchi Depth (m)') +
   xlab('') +
   
   theme_cbep(base_size = 12) +
@@ -425,7 +425,7 @@ plt <- secchi_data %>%
   stat_summary(geom = 'point', fun = median,
              pch = 19) +
   
-  ylab('Median Secchi Depth (M)') +
+  ylab('Median Secchi Depth (m)') +
   xlab('') +
   
   theme_cbep(base_size = 12) +
