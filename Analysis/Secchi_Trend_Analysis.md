@@ -27,7 +27,6 @@ Curtis C. Bohlen, Casco Bay Estuary Partnership
           - [Test: Comparison of Linear and Thiel-Sen Estimator
             Slopes](#test-comparison-of-linear-and-thiel-sen-estimator-slopes)
           - [Short-term](#short-term-1)
-          - [Results](#results-1)
           - [Comparison of Linear and Thiel-Sen Estimator
             Slopes](#comparison-of-linear-and-thiel-sen-estimator-slopes)
   - [Final Results Table](#final-results-table)
@@ -46,14 +45,14 @@ Curtis C. Bohlen, Casco Bay Estuary Partnership
 library(tidyverse)
 ```
 
-    ## -- Attaching packages ----------------------------------------------------------------------------------- tidyverse 1.3.0 --
+    ## -- Attaching packages --------------------------------------- tidyverse 1.3.0 --
 
     ## v ggplot2 3.3.2     v purrr   0.3.4
-    ## v tibble  3.0.3     v dplyr   1.0.2
+    ## v tibble  3.0.4     v dplyr   1.0.2
     ## v tidyr   1.1.2     v stringr 1.4.0
-    ## v readr   1.3.1     v forcats 0.5.0
+    ## v readr   1.4.0     v forcats 0.5.0
 
-    ## -- Conflicts -------------------------------------------------------------------------------------- tidyverse_conflicts() --
+    ## -- Conflicts ------------------------------------------ tidyverse_conflicts() --
     ## x dplyr::filter() masks stats::filter()
     ## x dplyr::lag()    masks stats::lag()
 
@@ -90,7 +89,8 @@ fn <- 'Secchi.csv'
 secchi_data <- read_csv(file.path(sibling, fn))
 ```
 
-    ## Parsed with column specification:
+    ## 
+    ## -- Column specification --------------------------------------------------------
     ## cols(
     ##   MIDAS = col_double(),
     ##   Lake = col_character(),
@@ -212,7 +212,8 @@ fn <- 'Secchi_Sebago.csv'
 secchi_sebago_data <- read_csv(file.path(sibling, fn))
 ```
 
-    ## Parsed with column specification:
+    ## 
+    ## -- Column specification --------------------------------------------------------
     ## cols(
     ##   MIDAS = col_double(),
     ##   Lake = col_character(),
@@ -229,7 +230,7 @@ secchi_data <- secchi_data %>%
   bind_rows(secchi_sebago_data)
 ```
 
-We remove two values from the Sebago Lake record.
+We remove three values from the Sebago Lake record.
 
 ``` r
 secchi_data <- secchi_data %>%
@@ -253,7 +254,8 @@ fn <- 'Lake_Morphometry_Metric.csv'
 morpho.data <- read_csv(file.path(sibling, fn))
 ```
 
-    ## Parsed with column specification:
+    ## 
+    ## -- Column specification --------------------------------------------------------
     ## cols(
     ##   .default = col_double(),
     ##   Lake = col_character(),
@@ -269,8 +271,7 @@ morpho.data <- read_csv(file.path(sibling, fn))
     ##   Invasives = col_character(),
     ##   Fishery = col_character()
     ## )
-
-    ## See spec(...) for full column specifications.
+    ## i Use `spec()` for the full column specifications.
 
 ## Read Morphometric Data
 
@@ -282,7 +283,8 @@ fn <- 'Lake_Morphometry_Metric.csv'
 morpho.data <- read_csv(file.path(sibling, fn))
 ```
 
-    ## Parsed with column specification:
+    ## 
+    ## -- Column specification --------------------------------------------------------
     ## cols(
     ##   .default = col_double(),
     ##   Lake = col_character(),
@@ -298,8 +300,7 @@ morpho.data <- read_csv(file.path(sibling, fn))
     ##   Invasives = col_character(),
     ##   Fishery = col_character()
     ## )
-
-    ## See spec(...) for full column specifications.
+    ## i Use `spec()` for the full column specifications.
 
 # Lakes With Sufficient Data
 
@@ -847,7 +848,7 @@ st_results <- st_results %>%
 rm(more, Slopes, PValues, TSSlopes, TSPValues, TSKPValues)
 ```
 
-### Results
+#### Results
 
 We filter out near-zero slopes (\< 0.005 m per year, or \~ 5 cm per
 decade) as meaningless. We would not normally do that, but the Thiel-Sen

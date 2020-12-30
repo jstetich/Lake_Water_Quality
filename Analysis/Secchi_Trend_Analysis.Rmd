@@ -404,7 +404,8 @@ couple of lakes with slopes exactly equal to zero, which nevertheless have
 statistically significant trends by Kendall's tau.  This reflects the slightly 
 different meanings of the different statistical tests involved.
 
-Note that the default test for statistical significance used by `mblm()` fails regularly with the short data records over the last ten years.
+Note that the default test for statistical significance used by `mblm()` fails 
+regularly with the short data records over the last ten years.
 
 ```{r}
 lt_results <- lt_results %>%
@@ -519,7 +520,7 @@ rm(more, Slopes, PValues, TSSlopes, TSPValues, TSKPValues)
 
 ```
 
-### Results
+#### Results
 We filter out near-zero slopes (< 0.005 m per year, or ~ 5 cm per decade) as
 meaningless.  We would not normally do that, but the Thiel-Sen slopes produces
 couple of lakes with slopes exactly equal to zero, which nevertheless has
