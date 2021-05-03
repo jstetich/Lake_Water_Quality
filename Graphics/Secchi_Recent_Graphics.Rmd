@@ -326,7 +326,7 @@ cor(tmp$Median, tmp[,2:12], use = 'pairwise', method='spearman')
 cat('\n\nKendall\n')
 cor(tmp$Median, tmp[,2:12], use = 'pairwise', method='kendall')
 ```
-BThat shows:  
+That shows:  
 
 1.  Larger lakes, especially deeper lakes, have clearer water, but the
     relationships are not simply linear, or the Pearson and Spearman

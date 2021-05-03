@@ -3,37 +3,37 @@ Analysis of Lakes Secchi Depth Trends
 Curtis C. Bohlen, Casco Bay Estuary Partnership
 11/19/2020
 
-  - [Load Libraries](#load-libraries)
-  - [Load Data](#load-data)
-      - [Folder References](#folder-references)
-      - [Read Secchi Data](#read-secchi-data)
-          - [Data Cleanup](#data-cleanup)
-          - [Address Inconsistencies in Sebago Lake
+-   [Load Libraries](#load-libraries)
+-   [Load Data](#load-data)
+    -   [Folder References](#folder-references)
+    -   [Read Secchi Data](#read-secchi-data)
+        -   [Data Cleanup](#data-cleanup)
+        -   [Address Inconsistencies in Sebago Lake
             Data](#address-inconsistencies-in-sebago-lake-data)
-      - [Recent Data Subset](#recent-data-subset)
-      - [Read Morphometric Data](#read-morphometric-data)
-      - [Read Morphometric Data](#read-morphometric-data-1)
-  - [Lakes With Sufficient Data](#lakes-with-sufficient-data)
-      - [Graphic of Data by Year](#graphic-of-data-by-year)
-  - [Analysis](#analysis)
-      - [Basic Lake Info](#basic-lake-info)
-      - [Trends](#trends)
-      - [Select Lakes With Sufficient
+    -   [Recent Data Subset](#recent-data-subset)
+    -   [Read Morphometric Data](#read-morphometric-data)
+    -   [Read Morphometric Data](#read-morphometric-data-1)
+-   [Lakes With Sufficient Data](#lakes-with-sufficient-data)
+    -   [Graphic of Data by Year](#graphic-of-data-by-year)
+-   [Analysis](#analysis)
+    -   [Basic Lake Info](#basic-lake-info)
+    -   [Trends](#trends)
+    -   [Select Lakes With Sufficient
         Data](#select-lakes-with-sufficient-data)
-          - [Long Term](#long-term)
-          - [Short Term](#short-term)
-      - [Results](#results)
-          - [Long Term](#long-term-1)
-          - [Test: Comparison of Linear and Thiel-Sen Estimator
+        -   [Long Term](#long-term)
+        -   [Short Term](#short-term)
+    -   [Results](#results)
+        -   [Long Term](#long-term-1)
+        -   [Test: Comparison of Linear and Thiel-Sen Estimator
             Slopes](#test-comparison-of-linear-and-thiel-sen-estimator-slopes)
-          - [Short-term](#short-term-1)
-          - [Comparison of Linear and Thiel-Sen Estimator
+        -   [Short-term](#short-term-1)
+        -   [Comparison of Linear and Thiel-Sen Estimator
             Slopes](#comparison-of-linear-and-thiel-sen-estimator-slopes)
-  - [Final Results Table](#final-results-table)
-      - [Export Results](#export-results)
-      - [View Table](#view-table)
-  - [A Side Question](#a-side-question)
-  - [Trendlines for All Lakes](#trendlines-for-all-lakes)
+-   [Final Results Table](#final-results-table)
+    -   [Export Results](#export-results)
+    -   [View Table](#view-table)
+-   [A Side Question](#a-side-question)
+-   [Trendlines for All Lakes](#trendlines-for-all-lakes)
 
 <img
   src="https://www.cascobayestuary.org/wp-content/uploads/2014/04/logo_sm.jpg"
@@ -45,12 +45,22 @@ Curtis C. Bohlen, Casco Bay Estuary Partnership
 library(tidyverse)
 ```
 
-    ## -- Attaching packages --------------------------------------- tidyverse 1.3.0 --
+    ## Warning: package 'tidyverse' was built under R version 4.0.5
 
-    ## v ggplot2 3.3.2     v purrr   0.3.4
-    ## v tibble  3.0.4     v dplyr   1.0.2
-    ## v tidyr   1.1.2     v stringr 1.4.0
-    ## v readr   1.4.0     v forcats 0.5.0
+    ## -- Attaching packages --------------------------------------- tidyverse 1.3.1 --
+
+    ## v ggplot2 3.3.3     v purrr   0.3.4
+    ## v tibble  3.1.1     v dplyr   1.0.5
+    ## v tidyr   1.1.3     v stringr 1.4.0
+    ## v readr   1.4.0     v forcats 0.5.1
+
+    ## Warning: package 'tibble' was built under R version 4.0.5
+
+    ## Warning: package 'tidyr' was built under R version 4.0.5
+
+    ## Warning: package 'dplyr' was built under R version 4.0.5
+
+    ## Warning: package 'forcats' was built under R version 4.0.5
 
     ## -- Conflicts ------------------------------------------ tidyverse_conflicts() --
     ## x dplyr::filter() masks stats::filter()
@@ -130,26 +140,24 @@ of 1997, where scope was recorded as “L”. Surrounding values had Scope
 
 Here we convert some values to factors, and add Year and month terms.
 
-  - The “Scope” data contains a sixth value Scope == 6, that is not
+-   The “Scope” data contains a sixth value Scope == 6, that is not
     referenced in the source Metadata. We declare it as “Undefined”,
     pending clarification from DEP of the lakes monitoring community. If
     we need this information, it may be defined in the Maine Volunteer
     Lakes Monitoring QAPP ore related SOPs. A quick search of online
     documents found the QAPP, but not the SOPs.
 
-  - We filter out NAs is because one lake is included in the data but
+-   We filter out NAs is because one lake is included in the data but
     has no actual Secchi data, and it prevents the lake from being
     carried forward.
 
-  - We convert the Lake name to a factor, ordered by median Secchi
+-   We convert the Lake name to a factor, ordered by median Secchi
     Depth.
 
-  - Coding for the “Secchi\_on\_Bottom” flag is inconsistent, with four
+-   Coding for the “Secchi\_on\_Bottom” flag is inconsistent, with four
     possible codes: “Y”, “B”, “N”, and "“. We interpret the first two as
     evidence that the Secchi Disk was on the bottom,”N" as evidence that
     it was not, and "" as a missing value.
-
-<!-- end list -->
 
 ``` r
 secchi_data <- secchi_data %>%
@@ -195,11 +203,11 @@ secchi_data %>%
 
 ![](Secchi_Trend_Analysis_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
 This points to several problems:  
-1\. Sebago Lake has been one of the most consistently sampled lakes,
+1. Sebago Lake has been one of the most consistently sampled lakes,
 under a long-running program managed by the Portland Water District. Yet
 we have major gaps in the recent record. This probably reflects changes
 in how data has been reported to DEP.  
-2\. The extreme low values in 2017 and 2018 correspond to the only two
+2. The extreme low values in 2017 and 2018 correspond to the only two
 samples from a new station. Any recent trend is due to addition of this
 anomolous new source of data.
 
@@ -474,7 +482,7 @@ st_results <- recent_data %>%
 ### Long Term
 
 We calculate lake by lake linear model slopes and Theil-Sen slopes and P
-VaLues. We could also run these models using the nested data frames
+Values. We could also run these models using the nested data frames
 approach used for looking at metals in out Toxics data, but this “for
 loop” approach works (although inefficiently).
 
@@ -531,7 +539,7 @@ TSKPValues <- vector(mode = "numeric", length = 0)
 
     ## Warning in wilcox.test.default(z$slopes): cannot compute exact p-value with
     ## zeroes
-    
+
     ## Warning in wilcox.test.default(z$slopes): cannot compute exact p-value with
     ## zeroes
 
@@ -557,7 +565,7 @@ rm(more, Slopes, PValues, TSSlopes, TSPValues, TSKPValues)
 
 #### Extracting Results
 
-We filter out near-zero slopes (\< 0.005m per year, or \~ 5 cm per
+We filter out near-zero slopes (&lt; 0.005m per year, or \~ 5 cm per
 decade) as meaningless. We would not normally do that, but the Thiel-Sen
 analysis produces couple of lakes with slopes exactly equal to zero,
 which nevertheless have statistically significant trends by Kendall’s
@@ -588,7 +596,7 @@ lt_results %>%
 ```
 
 | MIDAS | Lake               | lm\_category | TS\_category | Samples | FirstYear | LastYear |
-| ----: | :----------------- | :----------- | :----------- | ------: | --------: | -------: |
+|------:|:-------------------|:-------------|:-------------|--------:|----------:|---------:|
 |  3382 | Tricky Pond        | Declining    | Declining    |     650 |      1976 |     2018 |
 |  3690 | Raymond Pond       | Declining    | Declining    |     238 |      1974 |     2017 |
 |  3734 | Highland Lake      | Declining    | Declining    |     859 |      1974 |     2018 |
@@ -850,7 +858,7 @@ rm(more, Slopes, PValues, TSSlopes, TSPValues, TSKPValues)
 
 #### Results
 
-We filter out near-zero slopes (\< 0.005 m per year, or \~ 5 cm per
+We filter out near-zero slopes (&lt; 0.005 m per year, or \~ 5 cm per
 decade) as meaningless. We would not normally do that, but the Thiel-Sen
 slopes produces couple of lakes with slopes exactly equal to zero, which
 nevertheless has statistically significant trends by Kendall’s tau.
@@ -902,7 +910,7 @@ st_results %>%
 ```
 
 | MIDAS | Lake               | lm\_category | TS\_category | Samples | FirstYear | LastYear |
-| ----: | :----------------- | :----------- | :----------- | ------: | --------: | -------: |
+|------:|:-------------------|:-------------|:-------------|--------:|----------:|---------:|
 |  3188 | Foster Pond        | Declining    | Declining    |     269 |      2009 |     2018 |
 |  3388 | Parker Pond        | Declining    | Declining    |      45 |      2009 |     2017 |
 |  3234 | Stearns Pond       | Increasing   | Increasing   |     225 |      2009 |     2018 |
@@ -984,7 +992,7 @@ combined_results %>%
 ```
 
 | Lake               | Observations | Earliest Data | Long Term Trend | Recent Trend |
-| :----------------- | :----------: | :-----------: | :-------------- | :----------- |
+|:-------------------|:------------:|:-------------:|:----------------|:-------------|
 | Adams Pond         |     432      |     1989      | No Change       | Increasing   |
 | Bay of Naples Lake |     377      |     1976      | No Change       | No Change    |
 | Bear Pond          |     480      |     1978      | No Change       | Increasing   |
@@ -1034,8 +1042,6 @@ secchi_data %>%
             FirstYear = min(Year, na.rm = TRUE),
             Samples = sum(! is.na(Secchi_Depth)))
 ```
-
-    ## `summarise()` ungrouping output (override with `.groups` argument)
 
     ## # A tibble: 2 x 4
     ##   MIDAS Lake      FirstYear Samples

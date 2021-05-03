@@ -112,8 +112,8 @@ from the last 10 years or so, While Jordan Bay has little data from before 1990.
 We may want to limit data at some point to simplify analyses.
 
 # Analysis Logic
-We are interested in looking at smothed temporal trends, so we are probably
-looking at using a GAM model or a GAMM model ifwe want to explicitly model
+We are interested in looking at smoothed temporal trends, so we are probably
+looking at using a GAM model or a GAMM model if we want to explicitly model
 stations as random factors.  hat feels unnecessary for a preliminary analysis.
 
 ```{r}

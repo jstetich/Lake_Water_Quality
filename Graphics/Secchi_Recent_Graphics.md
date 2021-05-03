@@ -3,31 +3,31 @@ Graphics For Recent Lake Secchi Depths
 Curtis C. Bohlen, Casco Bay Estuary Partnership
 11/29/2020
 
-  - [Load Libraries](#load-libraries)
-  - [Load Data](#load-data)
-      - [Folder References](#folder-references)
-          - [Read Secchi Data](#read-secchi-data)
-          - [Data Cleanup](#data-cleanup)
-          - [Address Inconsistencies in Sebago Lake
+-   [Load Libraries](#load-libraries)
+-   [Load Data](#load-data)
+    -   [Folder References](#folder-references)
+        -   [Read Secchi Data](#read-secchi-data)
+        -   [Data Cleanup](#data-cleanup)
+        -   [Address Inconsistencies in Sebago Lake
             Data](#address-inconsistencies-in-sebago-lake-data)
-          - [Filter to Last Ten Years](#filter-to-last-ten-years)
-      - [Read Morphometric Data](#read-morphometric-data)
-      - [Lakes With Sufficient Data](#lakes-with-sufficient-data)
-          - [Graphic of Data by Year](#graphic-of-data-by-year)
-          - [List Ponds with Enough Data](#list-ponds-with-enough-data)
-      - [Construct Recent Lake
+        -   [Filter to Last Ten Years](#filter-to-last-ten-years)
+    -   [Read Morphometric Data](#read-morphometric-data)
+    -   [Lakes With Sufficient Data](#lakes-with-sufficient-data)
+        -   [Graphic of Data by Year](#graphic-of-data-by-year)
+        -   [List Ponds with Enough Data](#list-ponds-with-enough-data)
+    -   [Construct Recent Lake
         Summaries](#construct-recent-lake-summaries)
-  - [Graphics](#graphics)
-      - [Bar Chart](#bar-chart)
-      - [Violin Plot](#violin-plot)
-  - [Correlations Between Secchi Depth and Lake
+-   [Graphics](#graphics)
+    -   [Bar Chart](#bar-chart)
+    -   [Violin Plot](#violin-plot)
+-   [Correlations Between Secchi Depth and Lake
     Morphology](#correlations-between-secchi-depth-and-lake-morphology)
-  - [Showing Relationships
+-   [Showing Relationships
     Graphically](#showing-relationships-graphically)
-      - [Water Clarity and Mean Depth](#water-clarity-and-mean-depth)
-          - [Linear Regression](#linear-regression)
-          - [Related Plot](#related-plot)
-      - [Secchi by Location (and Depth)](#secchi-by-location-and-depth)
+    -   [Water Clarity and Mean Depth](#water-clarity-and-mean-depth)
+        -   [Linear Regression](#linear-regression)
+        -   [Related Plot](#related-plot)
+    -   [Secchi by Location (and Depth)](#secchi-by-location-and-depth)
 
 <img
   src="https://www.cascobayestuary.org/wp-content/uploads/2014/04/logo_sm.jpg"
@@ -39,12 +39,22 @@ Curtis C. Bohlen, Casco Bay Estuary Partnership
 library(tidyverse)
 ```
 
-    ## -- Attaching packages --------------------------------------- tidyverse 1.3.0 --
+    ## Warning: package 'tidyverse' was built under R version 4.0.5
 
-    ## v ggplot2 3.3.2     v purrr   0.3.4
-    ## v tibble  3.0.4     v dplyr   1.0.2
-    ## v tidyr   1.1.2     v stringr 1.4.0
-    ## v readr   1.4.0     v forcats 0.5.0
+    ## -- Attaching packages --------------------------------------- tidyverse 1.3.1 --
+
+    ## v ggplot2 3.3.3     v purrr   0.3.4
+    ## v tibble  3.1.1     v dplyr   1.0.5
+    ## v tidyr   1.1.3     v stringr 1.4.0
+    ## v readr   1.4.0     v forcats 0.5.1
+
+    ## Warning: package 'tibble' was built under R version 4.0.5
+
+    ## Warning: package 'tidyr' was built under R version 4.0.5
+
+    ## Warning: package 'dplyr' was built under R version 4.0.5
+
+    ## Warning: package 'forcats' was built under R version 4.0.5
 
     ## -- Conflicts ------------------------------------------ tidyverse_conflicts() --
     ## x dplyr::filter() masks stats::filter()
@@ -125,26 +135,24 @@ of 1997, where scope was recorded as “L”. Surrounding values had Scope
 
 Here we convert some values to factors, and add Year and month terms.
 
-  - The “Scope” data contains a sixth value Scope == 6, that is not
+-   The “Scope” data contains a sixth value Scope == 6, that is not
     referenced in the source Metadata. We declare it as “Undefined”,
     pending clarification from DEP of the lakes monitoring community.
     Ifwe need this information, it may be defined in the Maine Volunteer
     Lakes Monitoring QAPP ore related SOPs. A quick search of online
     documents found the QAPP, but not the SOPs.
 
-  - We filter out NAs is because one lake is included in the data but
+-   We filter out NAs is because one lake is included in the data but
     has no actual Secchi data, and it prevents the lake from being
     carried forward.
 
-  - We convert the Lake name to a factor, ordered by meedian Secchi
+-   We convert the Lake name to a factor, ordered by meedian Secchi
     Depth.
 
-  - Coding for the “Secchi\_on\_Bottom” flag is inconsistent, with four
+-   Coding for the “Secchi\_on\_Bottom” flag is inconsistent, with four
     possible codes: “Y”, “B”, “N”, and "“. We interpret the first two as
     evidence that the Secchi Disk was on the bottom,”N" as evidence that
     it was not, and "" as a missing value.
-
-<!-- end list -->
 
 ``` r
 secchi_data <- secchi_data %>%
@@ -444,7 +452,9 @@ ggsave('figures/current_secchi_violin.pdf', device = cairo_pdf,
 # Correlations Between Secchi Depth and Lake Morphology
 
 We can compare recent median water clarity to potential explanatory
-morphometric variables.
+morphometric variables. To do so, we assemble a data set contianing
+morphometric data for our lakes, and add to it median Secchi depths
+based on observations from the past 10 years.
 
 ``` r
 tmp <- morpho.data %>%
@@ -504,13 +514,13 @@ cor(tmp$Median, tmp[,2:12], use = 'pairwise', method='kendall')
     ##      Area_sq_m  Perim_km  D_Mean_m   D_Max_m Volume_m3
     ## [1,] 0.3566592 0.3788706 0.5586134 0.4876175 0.4146149
 
-Basically, that shows:
+That shows:
 
-1.  larger lakes, especially deeper lakes, have clearer water, but the
+1.  Larger lakes, especially deeper lakes, have clearer water, but the
     relationships are not simply linear, or the Pearson and Spearman
     Coefficients would be more similar.  
 2.  Lakes with higher flushing rates tend to have poorer water clarity.
-    That probably reflect the fact that smaller lakes have smaller
+    That probably reflects the fact that smaller lakes have smaller
     volumes, and thus higher flushing rates.
 
 # Showing Relationships Graphically
@@ -786,7 +796,7 @@ width = 5, height = 3)
     ## `geom_smooth()` using formula 'y ~ x'
 
     ## Warning: Removed 1 rows containing non-finite values (stat_smooth).
-    
+
     ## Warning: Removed 1 rows containing missing values (geom_point).
 
 ## Secchi by Location (and Depth)

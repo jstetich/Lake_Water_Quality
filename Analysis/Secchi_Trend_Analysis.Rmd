@@ -323,7 +323,7 @@ st_results <- recent_data %>%
 
 ## Results
 ### Long Term
-We calculate lake by lake linear model slopes and Theil-Sen slopes and P VaLues.
+We calculate lake by lake linear model slopes and Theil-Sen slopes and P Values.
 We could also run these models using the nested data frames approach used
 for looking at metals in out Toxics data, but this "for loop" approach works
 (although inefficiently).
