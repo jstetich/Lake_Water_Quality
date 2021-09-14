@@ -152,13 +152,6 @@ recent_data <- secchi_data %>%
 ```
 
 ## Read Morphometric Data
-```{r}
-fn <- 'Lake_Morphometry_Metric.csv'
-morpho.data <- read_csv(file.path(sibling, fn))
-
-```
-
-## Read Morphometric Data
 Read in morphometric data, and filter to lakes for which we have at least some
 Secchi data.
 
@@ -423,7 +416,7 @@ lt_results <- lt_results %>%
 ```{r}
 lt_results %>%
   select(MIDAS, Lake, lm_category, TS_category, Samples, FirstYear, LastYear) %>%
-  arrange(lm_category) %>%
+  arrange(Lake) %>%
   knitr::kable()
 ```
 
@@ -559,7 +552,7 @@ plt
 ```{r}
 st_results %>%
   select(MIDAS, Lake, lm_category, TS_category, Samples, FirstYear, LastYear) %>%
-  arrange(lm_category) %>%
+  arrange(Lake) %>%
   knitr::kable()
 ```
 
@@ -595,12 +588,12 @@ combined_results %>%
          TS_category_st = factor(TS_category_st, levels = c('Declining', 
                                                             'No Change',
                                                             'Increasing'))) %>%
-  select(Lake, Samples_lt, FirstYear_lt,
-         TS_category_lt, TS_category_st) %>%
+  select(Lake, Samples_lt, FirstYear_lt, TS_category_st, TS_category_lt) %>%
   arrange(Lake) %>%
   
-  knitr::kable(align = "lccll", col.names = c('Lake', 'Observations', 'Earliest Data',
-                        'Long Term Trend', 'Recent Trend' ))
+  knitr::kable(align = "lccll", col.names = c('Lake', 'Observations', 
+                                              'Earliest Data', 'Recent Trend',
+                                              'Long Term Trend'))
                         
 ```
 Relevant sample sizes and starting dates for Duck and Bog ponds are as follows:

@@ -12,7 +12,6 @@ Curtis C. Bohlen, Casco Bay Estuary Partnership
             Data](#address-inconsistencies-in-sebago-lake-data)
     -   [Recent Data Subset](#recent-data-subset)
     -   [Read Morphometric Data](#read-morphometric-data)
-    -   [Read Morphometric Data](#read-morphometric-data-1)
 -   [Lakes With Sufficient Data](#lakes-with-sufficient-data)
     -   [Graphic of Data by Year](#graphic-of-data-by-year)
 -   [Analysis](#analysis)
@@ -50,11 +49,9 @@ library(tidyverse)
     ## -- Attaching packages --------------------------------------- tidyverse 1.3.1 --
 
     ## v ggplot2 3.3.3     v purrr   0.3.4
-    ## v tibble  3.1.1     v dplyr   1.0.5
+    ## v tibble  3.1.2     v dplyr   1.0.6
     ## v tidyr   1.1.3     v stringr 1.4.0
     ## v readr   1.4.0     v forcats 0.5.1
-
-    ## Warning: package 'tibble' was built under R version 4.0.5
 
     ## Warning: package 'tidyr' was built under R version 4.0.5
 
@@ -257,32 +254,6 @@ recent_data <- secchi_data %>%
 
 ## Read Morphometric Data
 
-``` r
-fn <- 'Lake_Morphometry_Metric.csv'
-morpho.data <- read_csv(file.path(sibling, fn))
-```
-
-    ## 
-    ## -- Column specification --------------------------------------------------------
-    ## cols(
-    ##   .default = col_double(),
-    ##   Lake = col_character(),
-    ##   Towns = col_character(),
-    ##   Trop_Cat = col_character(),
-    ##   Dam = col_character(),
-    ##   Major_Drainage = col_character(),
-    ##   Sub_Drainage = col_character(),
-    ##   HUC10_Name = col_character(),
-    ##   USGS_Quad24 = col_character(),
-    ##   County = col_character(),
-    ##   WQ_Statement = col_character(),
-    ##   Invasives = col_character(),
-    ##   Fishery = col_character()
-    ## )
-    ## i Use `spec()` for the full column specifications.
-
-## Read Morphometric Data
-
 Read in morphometric data, and filter to lakes for which we have at
 least some Secchi data.
 
@@ -336,7 +307,7 @@ secchi_data %>%
   ggtitle('Secchi Depth Data')
 ```
 
-![](Secchi_Trend_Analysis_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
+![](Secchi_Trend_Analysis_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
 
 ``` r
 # ggsave('figures/current_secchi_data_availability.pdf', device = cairo_pdf,
@@ -591,47 +562,47 @@ lt_results <- lt_results %>%
 ``` r
 lt_results %>%
   select(MIDAS, Lake, lm_category, TS_category, Samples, FirstYear, LastYear) %>%
-  arrange(lm_category) %>%
+  arrange(Lake) %>%
   knitr::kable()
 ```
 
-| MIDAS | Lake               | lm\_category | TS\_category | Samples | FirstYear | LastYear |
-|------:|:-------------------|:-------------|:-------------|--------:|----------:|---------:|
-|  3382 | Tricky Pond        | Declining    | Declining    |     650 |      1976 |     2018 |
-|  3690 | Raymond Pond       | Declining    | Declining    |     238 |      1974 |     2017 |
-|  3734 | Highland Lake      | Declining    | Declining    |     859 |      1974 |     2018 |
-|  3234 | Stearns Pond       | Increasing   | Increasing   |     720 |      1975 |     2018 |
-|  3262 | Songo Pond         | Increasing   | Increasing   |     242 |      1974 |     2018 |
-|  3388 | Parker Pond        | Increasing   | No Change    |     209 |      1978 |     2017 |
-|  3390 | Coffee Pond        | Increasing   | Increasing   |     252 |      1974 |     2017 |
-|  3392 | Thomas Pond        | Increasing   | Increasing   |     547 |      1976 |     2018 |
-|  3414 | Papoose Pond       | Increasing   | Increasing   |     267 |      1989 |     2018 |
-|  3416 | Keoka Lake         | Increasing   | Increasing   |     663 |      1977 |     2018 |
-|  3418 | Long Pond          | Increasing   | Increasing   |     558 |      1978 |     2018 |
-|  3420 | Bear Pond          | Increasing   | No Change    |     480 |      1978 |     2018 |
-|  3448 | Island Pond        | Increasing   | No Change    |     341 |      1986 |     2018 |
-|  3452 | Crystal Lake       | Increasing   | Increasing   |     510 |      1972 |     2018 |
-|  3454 | Highland Lake      | Increasing   | Increasing   |     497 |      1972 |     2018 |
-|  3456 | Woods Pond         | Increasing   | Increasing   |     575 |      1972 |     2018 |
-|  3458 | Otter Pond         | Increasing   | Increasing   |     174 |      1988 |     2018 |
-|  3700 | Sabbathday Lake    | Increasing   | Increasing   |     294 |      1975 |     2018 |
-|  3706 | Notched Pond       | Increasing   | Increasing   |     339 |      1976 |     2018 |
-|  3712 | Forest Lake        | Increasing   | Increasing   |     536 |      1974 |     2018 |
-|  3714 | Little Sebago Lake | Increasing   | Increasing   |    1194 |      1975 |     2018 |
-|  5780 | Long Lake          | Increasing   | Increasing   |    1310 |      1976 |     2018 |
-|  3188 | Foster Pond        | No Change    | No Change    |     671 |      1984 |     2018 |
-|  3370 | Holt Pond          | No Change    | No Change    |      21 |      2000 |     2018 |
-|  3374 | Peabody Pond       | No Change    | No Change    |     438 |      1976 |     2018 |
-|  3376 | Cold Rain Pond     | No Change    | No Change    |     491 |      1987 |     2018 |
-|  3396 | Adams Pond         | No Change    | No Change    |     432 |      1989 |     2018 |
-|  3424 | Little Moose Pond  | No Change    | No Change    |     313 |      1987 |     2018 |
-|  3446 | Pleasant Lake      | No Change    | No Change    |     505 |      1977 |     2018 |
-|  3694 | Panther Pond       | No Change    | No Change    |     461 |      1974 |     2018 |
-|  3696 | Crescent Lake      | No Change    | No Change    |     720 |      1974 |     2018 |
-|  3708 | Crystal Lake       | No Change    | No Change    |     316 |      1974 |     2018 |
-|  3728 | Collins Pond       | No Change    | No Change    |     248 |      1975 |     2018 |
-|  5786 | Sebago Lake        | No Change    | No Change    |    1723 |      1970 |     2018 |
-|  9685 | Bay of Naples Lake | No Change    | No Change    |     377 |      1976 |     2018 |
+| MIDAS | Lake                 | lm\_category | TS\_category | Samples | FirstYear | LastYear |
+|------:|:---------------------|:-------------|:-------------|--------:|----------:|---------:|
+|  3396 | Adams Pond           | No Change    | No Change    |     432 |      1989 |     2018 |
+|  9685 | Bay of Naples Lake   | No Change    | No Change    |     377 |      1976 |     2018 |
+|  3420 | Bear Pond            | Increasing   | No Change    |     480 |      1978 |     2018 |
+|  3390 | Coffee Pond          | Increasing   | Increasing   |     252 |      1974 |     2017 |
+|  3376 | Cold Rain Pond       | No Change    | No Change    |     491 |      1987 |     2018 |
+|  3728 | Collins Pond         | No Change    | No Change    |     248 |      1975 |     2018 |
+|  3696 | Crescent Lake        | No Change    | No Change    |     720 |      1974 |     2018 |
+|  3452 | Crystal Lake         | Increasing   | Increasing   |     510 |      1972 |     2018 |
+|  3708 | Crystal Lake         | No Change    | No Change    |     316 |      1974 |     2018 |
+|  3712 | Forest Lake          | Increasing   | Increasing   |     536 |      1974 |     2018 |
+|  3188 | Foster Pond          | No Change    | No Change    |     671 |      1984 |     2018 |
+|  3734 | Highland (Duck) Lake | Declining    | Declining    |     859 |      1974 |     2018 |
+|  3454 | Highland Lake        | Increasing   | Increasing   |     497 |      1972 |     2018 |
+|  3370 | Holt Pond            | No Change    | No Change    |      21 |      2000 |     2018 |
+|  3448 | Island Pond          | Increasing   | No Change    |     341 |      1986 |     2018 |
+|  3416 | Keoka Lake           | Increasing   | Increasing   |     663 |      1977 |     2018 |
+|  3424 | Little Moose Pond    | No Change    | No Change    |     313 |      1987 |     2018 |
+|  3714 | Little Sebago Lake   | Increasing   | Increasing   |    1194 |      1975 |     2018 |
+|  5780 | Long Lake            | Increasing   | Increasing   |    1310 |      1976 |     2018 |
+|  3418 | Long Pond            | Increasing   | Increasing   |     558 |      1978 |     2018 |
+|  3706 | Notched Pond         | Increasing   | Increasing   |     339 |      1976 |     2018 |
+|  3458 | Otter Pond           | Increasing   | Increasing   |     174 |      1988 |     2018 |
+|  3694 | Panther Pond         | No Change    | No Change    |     461 |      1974 |     2018 |
+|  3414 | Papoose Pond         | Increasing   | Increasing   |     267 |      1989 |     2018 |
+|  3388 | Parker Pond          | Increasing   | No Change    |     209 |      1978 |     2017 |
+|  3374 | Peabody Pond         | No Change    | No Change    |     438 |      1976 |     2018 |
+|  3446 | Pleasant Lake        | No Change    | No Change    |     505 |      1977 |     2018 |
+|  3690 | Raymond Pond         | Declining    | Declining    |     238 |      1974 |     2017 |
+|  3700 | Sabbathday Lake      | Increasing   | Increasing   |     294 |      1975 |     2018 |
+|  5786 | Sebago Lake          | No Change    | No Change    |    1723 |      1970 |     2018 |
+|  3262 | Songo Pond           | Increasing   | Increasing   |     242 |      1974 |     2018 |
+|  3234 | Stearns Pond         | Increasing   | Increasing   |     720 |      1975 |     2018 |
+|  3392 | Thomas Pond          | Increasing   | Increasing   |     547 |      1976 |     2018 |
+|  3382 | Tricky Pond          | Declining    | Declining    |     650 |      1976 |     2018 |
+|  3456 | Woods Pond           | Increasing   | Increasing   |     575 |      1972 |     2018 |
 
 ### Test: Comparison of Linear and Thiel-Sen Estimator Slopes
 
@@ -658,7 +629,7 @@ plt
 
     ## `geom_smooth()` using formula 'y ~ x'
 
-![](Secchi_Trend_Analysis_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
+![](Secchi_Trend_Analysis_files/figure-gfm/unnamed-chunk-21-1.png)<!-- -->
 So results are similar either way. The TS Slope tends to be slightly
 lower than the linear model slope, especially for higher values of the
 slope, but the regression is not significantly different from a 1:1
@@ -900,54 +871,54 @@ plt
 
     ## `geom_smooth()` using formula 'y ~ x'
 
-![](Secchi_Trend_Analysis_files/figure-gfm/unnamed-chunk-28-1.png)<!-- -->
+![](Secchi_Trend_Analysis_files/figure-gfm/unnamed-chunk-27-1.png)<!-- -->
 
 ``` r
 st_results %>%
   select(MIDAS, Lake, lm_category, TS_category, Samples, FirstYear, LastYear) %>%
-  arrange(lm_category) %>%
+  arrange(Lake) %>%
   knitr::kable()
 ```
 
-| MIDAS | Lake               | lm\_category | TS\_category | Samples | FirstYear | LastYear |
-|------:|:-------------------|:-------------|:-------------|--------:|----------:|---------:|
-|  3188 | Foster Pond        | Declining    | Declining    |     269 |      2009 |     2018 |
-|  3388 | Parker Pond        | Declining    | Declining    |      45 |      2009 |     2017 |
-|  3234 | Stearns Pond       | Increasing   | Increasing   |     225 |      2009 |     2018 |
-|  3262 | Songo Pond         | Increasing   | Increasing   |      74 |      2009 |     2018 |
-|  3374 | Peabody Pond       | Increasing   | Increasing   |     120 |      2009 |     2018 |
-|  3392 | Thomas Pond        | Increasing   | Increasing   |     231 |      2009 |     2018 |
-|  3396 | Adams Pond         | Increasing   | Increasing   |     138 |      2009 |     2018 |
-|  3416 | Keoka Lake         | Increasing   | Increasing   |     212 |      2009 |     2018 |
-|  3418 | Long Pond          | Increasing   | Increasing   |     122 |      2009 |     2018 |
-|  3420 | Bear Pond          | Increasing   | Increasing   |     185 |      2009 |     2018 |
-|  3446 | Pleasant Lake      | Increasing   | Increasing   |     100 |      2009 |     2018 |
-|  3448 | Island Pond        | Increasing   | Increasing   |     128 |      2009 |     2018 |
-|  3452 | Crystal Lake       | Increasing   | Increasing   |     135 |      2009 |     2018 |
-|  3454 | Highland Lake      | Increasing   | Increasing   |     131 |      2009 |     2018 |
-|  3456 | Woods Pond         | Increasing   | Increasing   |     126 |      2009 |     2018 |
-|  3694 | Panther Pond       | Increasing   | Increasing   |     120 |      2009 |     2018 |
-|  3700 | Sabbathday Lake    | Increasing   | Increasing   |      91 |      2009 |     2018 |
-|  3706 | Notched Pond       | Increasing   | Increasing   |     106 |      2009 |     2018 |
-|  3708 | Crystal Lake       | Increasing   | Increasing   |     116 |      2009 |     2018 |
-|  3714 | Little Sebago Lake | Increasing   | Increasing   |     342 |      2009 |     2018 |
-|  3728 | Collins Pond       | Increasing   | Increasing   |      48 |      2012 |     2018 |
-|  3734 | Highland Lake      | Increasing   | Increasing   |     333 |      2009 |     2018 |
-|  5780 | Long Lake          | Increasing   | Increasing   |     374 |      2009 |     2018 |
-|  5786 | Sebago Lake        | Increasing   | Increasing   |     276 |      2009 |     2018 |
-|  3228 | Duck Pond          | No Change    | No Change    |       6 |      2013 |     2018 |
-|  3370 | Holt Pond          | No Change    | No Change    |      10 |      2009 |     2018 |
-|  3376 | Cold Rain Pond     | No Change    | No Change    |      76 |      2009 |     2018 |
-|  3382 | Tricky Pond        | No Change    | No Change    |     148 |      2009 |     2018 |
-|  3390 | Coffee Pond        | No Change    | No Change    |      22 |      2009 |     2017 |
-|  3414 | Papoose Pond       | No Change    | No Change    |      16 |      2009 |     2018 |
-|  3417 | Bog Pond           | No Change    | No Change    |       9 |      2009 |     2018 |
-|  3424 | Little Moose Pond  | No Change    | No Change    |     121 |      2009 |     2018 |
-|  3458 | Otter Pond         | No Change    | No Change    |      14 |      2009 |     2018 |
-|  3690 | Raymond Pond       | No Change    | No Change    |      41 |      2009 |     2017 |
-|  3696 | Crescent Lake      | No Change    | No Change    |     236 |      2009 |     2018 |
-|  3712 | Forest Lake        | No Change    | No Change    |     122 |      2009 |     2018 |
-|  9685 | Bay of Naples Lake | No Change    | No Change    |     120 |      2009 |     2018 |
+| MIDAS | Lake                 | lm\_category | TS\_category | Samples | FirstYear | LastYear |
+|------:|:---------------------|:-------------|:-------------|--------:|----------:|---------:|
+|  3396 | Adams Pond           | Increasing   | Increasing   |     138 |      2009 |     2018 |
+|  9685 | Bay of Naples Lake   | No Change    | No Change    |     120 |      2009 |     2018 |
+|  3420 | Bear Pond            | Increasing   | Increasing   |     185 |      2009 |     2018 |
+|  3417 | Bog Pond             | No Change    | No Change    |       9 |      2009 |     2018 |
+|  3390 | Coffee Pond          | No Change    | No Change    |      22 |      2009 |     2017 |
+|  3376 | Cold Rain Pond       | No Change    | No Change    |      76 |      2009 |     2018 |
+|  3728 | Collins Pond         | Increasing   | Increasing   |      48 |      2012 |     2018 |
+|  3696 | Crescent Lake        | No Change    | No Change    |     236 |      2009 |     2018 |
+|  3452 | Crystal Lake         | Increasing   | Increasing   |     135 |      2009 |     2018 |
+|  3708 | Crystal Lake         | Increasing   | Increasing   |     116 |      2009 |     2018 |
+|  3228 | Duck Pond            | No Change    | No Change    |       6 |      2013 |     2018 |
+|  3712 | Forest Lake          | No Change    | No Change    |     122 |      2009 |     2018 |
+|  3188 | Foster Pond          | Declining    | Declining    |     269 |      2009 |     2018 |
+|  3734 | Highland (Duck) Lake | Increasing   | Increasing   |     333 |      2009 |     2018 |
+|  3454 | Highland Lake        | Increasing   | Increasing   |     131 |      2009 |     2018 |
+|  3370 | Holt Pond            | No Change    | No Change    |      10 |      2009 |     2018 |
+|  3448 | Island Pond          | Increasing   | Increasing   |     128 |      2009 |     2018 |
+|  3416 | Keoka Lake           | Increasing   | Increasing   |     212 |      2009 |     2018 |
+|  3424 | Little Moose Pond    | No Change    | No Change    |     121 |      2009 |     2018 |
+|  3714 | Little Sebago Lake   | Increasing   | Increasing   |     342 |      2009 |     2018 |
+|  5780 | Long Lake            | Increasing   | Increasing   |     374 |      2009 |     2018 |
+|  3418 | Long Pond            | Increasing   | Increasing   |     122 |      2009 |     2018 |
+|  3706 | Notched Pond         | Increasing   | Increasing   |     106 |      2009 |     2018 |
+|  3458 | Otter Pond           | No Change    | No Change    |      14 |      2009 |     2018 |
+|  3694 | Panther Pond         | Increasing   | Increasing   |     120 |      2009 |     2018 |
+|  3414 | Papoose Pond         | No Change    | No Change    |      16 |      2009 |     2018 |
+|  3388 | Parker Pond          | Declining    | Declining    |      45 |      2009 |     2017 |
+|  3374 | Peabody Pond         | Increasing   | Increasing   |     120 |      2009 |     2018 |
+|  3446 | Pleasant Lake        | Increasing   | Increasing   |     100 |      2009 |     2018 |
+|  3690 | Raymond Pond         | No Change    | No Change    |      41 |      2009 |     2017 |
+|  3700 | Sabbathday Lake      | Increasing   | Increasing   |      91 |      2009 |     2018 |
+|  5786 | Sebago Lake          | Increasing   | Increasing   |     276 |      2009 |     2018 |
+|  3262 | Songo Pond           | Increasing   | Increasing   |      74 |      2009 |     2018 |
+|  3234 | Stearns Pond         | Increasing   | Increasing   |     225 |      2009 |     2018 |
+|  3392 | Thomas Pond          | Increasing   | Increasing   |     231 |      2009 |     2018 |
+|  3382 | Tricky Pond          | No Change    | No Change    |     148 |      2009 |     2018 |
+|  3456 | Woods Pond           | Increasing   | Increasing   |     126 |      2009 |     2018 |
 
 So, results are similar, although Theil-Sen detects two fewer lakes with
 significant increases in water clarity.
@@ -983,53 +954,53 @@ combined_results %>%
          TS_category_st = factor(TS_category_st, levels = c('Declining', 
                                                             'No Change',
                                                             'Increasing'))) %>%
-  select(Lake, Samples_lt, FirstYear_lt,
-         TS_category_lt, TS_category_st) %>%
+  select(Lake, Samples_lt, FirstYear_lt, TS_category_st, TS_category_lt) %>%
   arrange(Lake) %>%
   
-  knitr::kable(align = "lccll", col.names = c('Lake', 'Observations', 'Earliest Data',
-                        'Long Term Trend', 'Recent Trend' ))
+  knitr::kable(align = "lccll", col.names = c('Lake', 'Observations', 
+                                              'Earliest Data', 'Recent Trend',
+                                              'Long Term Trend'))
 ```
 
-| Lake               | Observations | Earliest Data | Long Term Trend | Recent Trend |
-|:-------------------|:------------:|:-------------:|:----------------|:-------------|
-| Adams Pond         |     432      |     1989      | No Change       | Increasing   |
-| Bay of Naples Lake |     377      |     1976      | No Change       | No Change    |
-| Bear Pond          |     480      |     1978      | No Change       | Increasing   |
-| Bog Pond           |      NA      |      NA       | NA              | No Change    |
-| Coffee Pond        |     252      |     1974      | Increasing      | No Change    |
-| Cold Rain Pond     |     491      |     1987      | No Change       | No Change    |
-| Collins Pond       |     248      |     1975      | No Change       | Increasing   |
-| Crescent Lake      |     720      |     1974      | No Change       | No Change    |
-| Crystal Lake       |     510      |     1972      | Increasing      | Increasing   |
-| Crystal Lake       |     316      |     1974      | No Change       | Increasing   |
-| Duck Pond          |      NA      |      NA       | NA              | No Change    |
-| Forest Lake        |     536      |     1974      | Increasing      | No Change    |
-| Foster Pond        |     671      |     1984      | No Change       | Declining    |
-| Highland Lake      |     497      |     1972      | Increasing      | Increasing   |
-| Highland Lake      |     859      |     1974      | Declining       | Increasing   |
-| Holt Pond          |      21      |     2000      | No Change       | No Change    |
-| Island Pond        |     341      |     1986      | No Change       | Increasing   |
-| Keoka Lake         |     663      |     1977      | Increasing      | Increasing   |
-| Little Moose Pond  |     313      |     1987      | No Change       | No Change    |
-| Little Sebago Lake |     1194     |     1975      | Increasing      | Increasing   |
-| Long Lake          |     1310     |     1976      | Increasing      | Increasing   |
-| Long Pond          |     558      |     1978      | Increasing      | Increasing   |
-| Notched Pond       |     339      |     1976      | Increasing      | Increasing   |
-| Otter Pond         |     174      |     1988      | Increasing      | No Change    |
-| Panther Pond       |     461      |     1974      | No Change       | Increasing   |
-| Papoose Pond       |     267      |     1989      | Increasing      | No Change    |
-| Parker Pond        |     209      |     1978      | No Change       | Declining    |
-| Peabody Pond       |     438      |     1976      | No Change       | Increasing   |
-| Pleasant Lake      |     505      |     1977      | No Change       | Increasing   |
-| Raymond Pond       |     238      |     1974      | Declining       | No Change    |
-| Sabbathday Lake    |     294      |     1975      | Increasing      | Increasing   |
-| Sebago Lake        |     1723     |     1970      | No Change       | Increasing   |
-| Songo Pond         |     242      |     1974      | Increasing      | Increasing   |
-| Stearns Pond       |     720      |     1975      | Increasing      | Increasing   |
-| Thomas Pond        |     547      |     1976      | Increasing      | Increasing   |
-| Tricky Pond        |     650      |     1976      | Declining       | No Change    |
-| Woods Pond         |     575      |     1972      | Increasing      | Increasing   |
+| Lake                 | Observations | Earliest Data | Recent Trend | Long Term Trend |
+|:---------------------|:------------:|:-------------:|:-------------|:----------------|
+| Adams Pond           |     432      |     1989      | Increasing   | No Change       |
+| Bay of Naples Lake   |     377      |     1976      | No Change    | No Change       |
+| Bear Pond            |     480      |     1978      | Increasing   | No Change       |
+| Bog Pond             |      NA      |      NA       | No Change    | NA              |
+| Coffee Pond          |     252      |     1974      | No Change    | Increasing      |
+| Cold Rain Pond       |     491      |     1987      | No Change    | No Change       |
+| Collins Pond         |     248      |     1975      | Increasing   | No Change       |
+| Crescent Lake        |     720      |     1974      | No Change    | No Change       |
+| Crystal Lake         |     510      |     1972      | Increasing   | Increasing      |
+| Crystal Lake         |     316      |     1974      | Increasing   | No Change       |
+| Duck Pond            |      NA      |      NA       | No Change    | NA              |
+| Forest Lake          |     536      |     1974      | No Change    | Increasing      |
+| Foster Pond          |     671      |     1984      | Declining    | No Change       |
+| Highland (Duck) Lake |     859      |     1974      | Increasing   | Declining       |
+| Highland Lake        |     497      |     1972      | Increasing   | Increasing      |
+| Holt Pond            |      21      |     2000      | No Change    | No Change       |
+| Island Pond          |     341      |     1986      | Increasing   | No Change       |
+| Keoka Lake           |     663      |     1977      | Increasing   | Increasing      |
+| Little Moose Pond    |     313      |     1987      | No Change    | No Change       |
+| Little Sebago Lake   |     1194     |     1975      | Increasing   | Increasing      |
+| Long Lake            |     1310     |     1976      | Increasing   | Increasing      |
+| Long Pond            |     558      |     1978      | Increasing   | Increasing      |
+| Notched Pond         |     339      |     1976      | Increasing   | Increasing      |
+| Otter Pond           |     174      |     1988      | No Change    | Increasing      |
+| Panther Pond         |     461      |     1974      | Increasing   | No Change       |
+| Papoose Pond         |     267      |     1989      | No Change    | Increasing      |
+| Parker Pond          |     209      |     1978      | Declining    | No Change       |
+| Peabody Pond         |     438      |     1976      | Increasing   | No Change       |
+| Pleasant Lake        |     505      |     1977      | Increasing   | No Change       |
+| Raymond Pond         |     238      |     1974      | No Change    | Declining       |
+| Sabbathday Lake      |     294      |     1975      | Increasing   | Increasing      |
+| Sebago Lake          |     1723     |     1970      | Increasing   | No Change       |
+| Songo Pond           |     242      |     1974      | Increasing   | Increasing      |
+| Stearns Pond         |     720      |     1975      | Increasing   | Increasing      |
+| Thomas Pond          |     547      |     1976      | Increasing   | Increasing      |
+| Tricky Pond          |     650      |     1976      | No Change    | Declining       |
+| Woods Pond           |     575      |     1972      | Increasing   | Increasing      |
 
 Relevant sample sizes and starting dates for Duck and Bog ponds are as
 follows:
@@ -1088,7 +1059,7 @@ ggplot(lt_results, aes(Median, TSSlope)) +
 
     ## `geom_smooth()` using formula 'y ~ x'
 
-![](Secchi_Trend_Analysis_files/figure-gfm/unnamed-chunk-35-1.png)<!-- -->
+![](Secchi_Trend_Analysis_files/figure-gfm/unnamed-chunk-34-1.png)<!-- -->
 
 So if there is a relationship, it’s weak and predominately due to two
 lakes, so we won’t take it too seriously.
@@ -1114,7 +1085,7 @@ filter(MIDAS %in% RecentLakesMIDAS) %>%
 
     ## `geom_smooth()` using formula 'y ~ x'
 
-![](Secchi_Trend_Analysis_files/figure-gfm/unnamed-chunk-36-1.png)<!-- -->
+![](Secchi_Trend_Analysis_files/figure-gfm/unnamed-chunk-35-1.png)<!-- -->
 
 ``` r
 ggsave('figures/secchi_trends.pdf', device = cairo_pdf,

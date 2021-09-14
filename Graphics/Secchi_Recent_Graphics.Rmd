@@ -49,7 +49,7 @@ secchi_data <- read_csv(file.path(sibling, fn))
 Eight of nine parsing errors are for Scope == "N", Songo pond, (MIDAS = 3262),
 for every observation in 2011.  We decided that "N" here probably meant no scope
 was used, so Scope == 1 (or, Scope = "None", after conversion to factor) is 
-appropriate.  We wil fix that after we add a "Year" value to the data.
+appropriate.  We will fix that after we add a "Year" value to the data.
 
 The ninth parsing error was for an observation from Woods Pond, in June of 1997,
 where scope was recorded as "L". Surrounding values had Scope == 2 and
@@ -135,6 +135,23 @@ Secchi data.
 fn <- 'Lake_Morphometry_Metric.csv'
 morpho.data <- read_csv(file.path(sibling, fn))
 #rm(fn,parent,sibfldnm,sibling)
+```
+
+## Replace Lake Names
+For consistency with tabular information developed in "Secchi_Trend_Analysis", 
+we need to replace the lake names from the Secchi data with the lake names from 
+the morphometry data. That way names only have to be changed in one location, 
+"Assemble_CB_Lakes_Data_3.Rmd".
+
+```{r}
+secchi_data$Lake[1:5]
+```
+
+```{r correct_lake_names}
+secchi_data <- secchi_data %>%
+  rename(Secchi_Lake_Name = Lake) %>%
+  mutate(Lake = morpho.data$Lake[match(MIDAS, morpho.data$MIDAS )]) %>%
+  relocate(Lake, .before = Secchi_Lake_Name)
 ```
 
 ## Lakes With Sufficient Data

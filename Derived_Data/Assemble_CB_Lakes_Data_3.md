@@ -3,44 +3,44 @@ Casco Bay Lakes Water Quality Data Aggregation
 Curtis C. Bohlen, Casco Bay Estuary Partnership
 11/29/2020
 
-  - [Load Libraries](#load-libraries)
-  - [Load Data](#load-data)
-      - [Folder References](#folder-references)
-      - [Lakes Geospatial Information](#lakes-geospatial-information)
-      - [Load Lake Morphometry data](#load-lake-morphometry-data)
-          - [Preparing the Morphometry
+-   [Load Libraries](#load-libraries)
+-   [Load Data](#load-data)
+    -   [Folder References](#folder-references)
+    -   [Lakes Geospatial Information](#lakes-geospatial-information)
+    -   [Load Lake Morphometry data](#load-lake-morphometry-data)
+        -   [Preparing the Morphometry
             Data](#preparing-the-morphometry-data)
-          - [Merge Morphometry Data with Lake
+        -   [Merge Morphometry Data with Lake
             Lists](#merge-morphometry-data-with-lake-lists)
-          - [Write Morphometry Data](#write-morphometry-data)
-      - [List Other Excel files found in
+        -   [Write Morphometry Data](#write-morphometry-data)
+    -   [List Other Excel files found in
         `Original_Data`](#list-other-excel-files-found-in-original_data)
-          - [Reflections](#reflections)
-      - [Read in Raw Data](#read-in-raw-data)
-  - [Examine Data Organization](#examine-data-organization)
-      - [Coding Method](#coding-method)
-      - [Compare Column Names](#compare-column-names)
-      - [Data Name Cleanup](#data-name-cleanup)
-          - [Utility Functions for Renaming
+        -   [Reflections](#reflections)
+    -   [Read in Raw Data](#read-in-raw-data)
+-   [Examine Data Organization](#examine-data-organization)
+    -   [Coding Method](#coding-method)
+    -   [Compare Column Names](#compare-column-names)
+    -   [Data Name Cleanup](#data-name-cleanup)
+        -   [Utility Functions for Renaming
             Variables](#utility-functions-for-renaming-variables)
-          - [Function Fixing Names in a Data
+        -   [Function Fixing Names in a Data
             Frame](#function-fixing-names-in-a-data-frame)
-          - [Apply the Function to Target Data
+        -   [Apply the Function to Target Data
             Frames](#apply-the-function-to-target-data-frames)
-  - [Checking Lake Context Data](#checking-lake-context-data)
-      - [Check Uniformity of Lake Context
+-   [Checking Lake Context Data](#checking-lake-context-data)
+    -   [Check Uniformity of Lake Context
         Data](#check-uniformity-of-lake-context-data)
-  - [Save Data for Selected Lakes](#save-data-for-selected-lakes)
-  - [Cleanup Observational Data](#cleanup-observational-data)
-      - [Color ‘AORT’ and ‘Color\_Method’](#color-aort-and-color_method)
-      - [Redundancy in P data and P data “Repeat”
+-   [Save Data for Selected Lakes](#save-data-for-selected-lakes)
+-   [Cleanup Observational Data](#cleanup-observational-data)
+    -   [Color ‘AORT’ and ‘Color\_Method’](#color-aort-and-color_method)
+    -   [Redundancy in P data and P data “Repeat”
         Samples](#redundancy-in-p-data-and-p-data-repeat-samples)
-      - [Pivot each data set to long
+    -   [Pivot each data set to long
         form](#pivot-each-data-set-to-long-form)
-          - [CHLA](#chla)
-          - [Phosphorus](#phosphorus)
-          - [pH and related data](#ph-and-related-data)
-  - [Write out Sample Data](#write-out-sample-data)
+        -   [CHLA](#chla)
+        -   [Phosphorus](#phosphorus)
+        -   [pH and related data](#ph-and-related-data)
+-   [Write out Sample Data](#write-out-sample-data)
 
 <img
   src="https://www.cascobayestuary.org/wp-content/uploads/2014/04/logo_sm.jpg"
@@ -54,12 +54,20 @@ library(readr)
 library(tidyverse)
 ```
 
-    ## -- Attaching packages --------------------------------------- tidyverse 1.3.0 --
+    ## Warning: package 'tidyverse' was built under R version 4.0.5
 
-    ## v ggplot2 3.3.2     v dplyr   1.0.2
-    ## v tibble  3.0.3     v stringr 1.4.0
-    ## v tidyr   1.1.2     v forcats 0.5.0
+    ## -- Attaching packages --------------------------------------- tidyverse 1.3.1 --
+
+    ## v ggplot2 3.3.3     v dplyr   1.0.6
+    ## v tibble  3.1.2     v stringr 1.4.0
+    ## v tidyr   1.1.3     v forcats 0.5.1
     ## v purrr   0.3.4
+
+    ## Warning: package 'tidyr' was built under R version 4.0.5
+
+    ## Warning: package 'dplyr' was built under R version 4.0.5
+
+    ## Warning: package 'forcats' was built under R version 4.0.5
 
     ## -- Conflicts ------------------------------------------ tidyverse_conflicts() --
     ## x dplyr::filter() masks stats::filter()
@@ -167,10 +175,10 @@ morpho_data <- read_excel(file.path(sister,fn), sheet = 'DATA',
 ### Preparing the Morphometry Data
 
 We need to:  
-1\. Correct the non-syntactic names of the morphometry data,  
-2\. Move the ‘Town’ column towards the front, 3. simplify the data by
+1. Correct the non-syntactic names of the morphometry data,  
+2. Move the ‘Town’ column towards the front, 3. simplify the data by
 shortenning names and dropping reference to the Delorme Atlas,  
-4\. Replace numeric code for the presence of dams with text, 5. Create a
+4. Replace numeric code for the presence of dams with text, 5. Create a
 metric version of the table, to link to lake analysis software.
 
 #### Fix Non-syntactic Names
@@ -215,7 +223,7 @@ relocate(Town, .after = Lake)
 
 #### Simplify Data
 
-some of those names are awkward and long, so we shorten them up
+Some of those names are awkward and long, so we shorten them up.
 
 ``` r
 morpho_data <- morpho_data %>%
@@ -291,6 +299,8 @@ Maine_Lakes$Lake[! Maine_Lakes$MIDAS %in% morpho_data$MIDAS]
 
 #### Test for Inconsistencies
 
+#### Lake Names
+
 ``` r
 t1 <- Maine_Lakes %>% select(MIDAS, Lake, Town)
 t2 <- morpho_data  %>% select(MIDAS, Lake, Town)
@@ -302,22 +312,22 @@ t3 <- t1 %>% inner_join(t2, by = 'MIDAS')
 
 ``` r
 t3[(t3$Lake.x != t3$Lake.y),] %>%
-  select(contains('Lake'))
+  select(MIDAS, contains('Lake'))
 ```
 
-    ## # A tibble: 2,963 x 2
-    ##    Lake.x               Lake.y                                                  
-    ##    <chr>                <chr>                                                   
-    ##  1 4th Pelletier Brook~ 4th Pelletier Brk Lake                                  
-    ##  2 5th Pelletier Brook~ Fifth Pelletier Brk Lk                                  
-    ##  3 6th Pelletier Brook~ Sixth Pelletier Brk Lk                                  
-    ##  4 Abol Deadwater Pd-w~ Abol Deadwater                                          
-    ##  5 Abol Pond (North)    Abol Pond                                               
-    ##  6 Adams Pond           Adams (Rock Haven) Pond                                 
-    ##  7 Alerton Lake         Alerton (Alberton) Lake                                 
-    ##  8 Ambajejus Lake       Ambajejus (Elbow, North Twin, South Twin, Pemadumcook C~
-    ##  9 Anderson Pond        Anderson (Evers) Pond                                   
-    ## 10 Aziscohos Lake       Aziscohos (Aziscoos, Sawyer) Lake                       
+    ## # A tibble: 2,963 x 3
+    ##    MIDAS Lake.x              Lake.y                                             
+    ##    <dbl> <chr>               <chr>                                              
+    ##  1  1562 4th Pelletier Broo~ 4th Pelletier Brk Lake                             
+    ##  2  1504 5th Pelletier Broo~ Fifth Pelletier Brk Lk                             
+    ##  3  1502 6th Pelletier Broo~ Sixth Pelletier Brk Lk                             
+    ##  4  2058 Abol Deadwater Pd-~ Abol Deadwater                                     
+    ##  5  2068 Abol Pond (North)   Abol Pond                                          
+    ##  6  3890 Adams Pond          Adams (Rock Haven) Pond                            
+    ##  7  1012 Alerton Lake        Alerton (Alberton) Lake                            
+    ##  8   982 Ambajejus Lake      Ambajejus (Elbow, North Twin, South Twin, Pemadumc~
+    ##  9  5422 Anderson Pond       Anderson (Evers) Pond                              
+    ## 10  3290 Aziscohos Lake      Aziscohos (Aziscoos, Sawyer) Lake                  
     ## # ... with 2,953 more rows
 
 So we have several thousand inconsistencies with regard to lake names,
@@ -326,6 +336,54 @@ abbreviations \* Inclusion of multiple different lake names.
 
 Many of the alternate lake names have been moved in the (more recent?)
 Maine Lakes data to the “Notes” Field. We have not checked consistency.
+
+##### Adjusting Lake Names
+
+We start with the names from the Maine Lakes data:
+
+``` r
+morpho_data <- morpho_data %>%
+  mutate(Lake = Maine_Lakes$Lake[match(MIDAS, Maine_Lakes$MIDAS)])
+```
+
+Unfortunately, lake names are not consistent across the different DEP
+data files we accessed, so we need to develop a consistent naming
+scheme.
+
+For our purposes, however, we need only worry about a handful of
+confusing lake names that occur on major lakes in the Casco Bay
+watershed for which we have observational (Secchi) data.
+
+Reviewers noted the following naming inconsistencies or confusions in
+tables and graphics based on names from Maine Lakes and the Secchi data.
+
+``` r
+tribble(
+~MIDAS, ~`Maine Lakes Name`, ~`Secchi Name`, ~Comment,
+3188,   'Foster Pond',    "Ingalls (Foster's) Pond", 'Shorter name OK', 
+3734, 'Highland Lake',  'Highland (Duck) Lake', 'In Falmouth, Westbrook, Windham', 
+3454, 'Highland Lake', 'Highland Lake', 'In Bridgton', 
+3424, 'Little Moose Pond', 'Moose Pond', 'Longer name better')
+```
+
+    ## # A tibble: 4 x 4
+    ##   MIDAS `Maine Lakes Name` `Secchi Name`           Comment                      
+    ##   <dbl> <chr>              <chr>                   <chr>                        
+    ## 1  3188 Foster Pond        Ingalls (Foster's) Pond Shorter name OK              
+    ## 2  3734 Highland Lake      Highland (Duck) Lake    In Falmouth, Westbrook, Wind~
+    ## 3  3454 Highland Lake      Highland Lake           In Bridgton                  
+    ## 4  3424 Little Moose Pond  Moose Pond              Longer name better
+
+What we do here is add our preferred names to the Morphometric data, so
+we can add those names (based on MIDAS numbers) to any other Lake data
+we are analyzing, specifically the Secchi data.
+
+``` r
+morpho_data$Lake[morpho_data$MIDAS == 3734] <- 'Highland (Duck) Lake'
+morpho_data$Lake[morpho_data$MIDAS == 3424] <- 'Little Moose Pond'
+```
+
+#### Town Names
 
 ``` r
 t3[(t3$Town.x != t3$Town.y),] %>%
@@ -355,22 +413,18 @@ Again, inconsistent nomenclature is common. In general, the Morphometry
 data includes multiple names for towns when lakes touch more than one.
 The Maine Lakes list does not, generally selecting one town.
 
-The (newer\!) observational data (see below) also lists multiple towns.
+The (newer!) observational data (see below) also lists multiple towns.
 While those listings of multiple towns are internally consistent, We
 have not formally checked if the listing of multiple towns there is
-consistent with the Morphology Data (although in a few sopt checks, it
+consistent with the Morphology Data (although in a few spot checks, it
 does appear to be).
 
 Our conclusion is that, for now, we want to keep the Morphometry list of
-Towns, but the lake names from Maine Lakes.
-
-So, to assemble a joined database, we only need to import the simpler
-Lake Name field, and rename the Town field to “Towns” to be clear that
+Towns. We only need to rename the Town field to “Towns” to be clear that
 it can include more than one, and thus avoid future conflicts.
 
 ``` r
 morpho_data <- morpho_data %>%
-  mutate(Lake = Maine_Lakes$Lake[match(MIDAS, Maine_Lakes$MIDAS)]) %>%
   rename(Towns = Town)
 ```
 
@@ -413,7 +467,20 @@ data, load it, and give each data frame a short name..
 ``` r
 fls <- list.files(sister)
 fls <- fls[substr(fls,nchar(fls)-4, nchar(fls))=='.xlsx'] # Restrict to .xlsx 
+fls <- fls[1:7]  # Drop the Sebago Lake data, added after this code was first 
+                # developed.
+fls
+```
 
+    ## [1] "MaineLakes_Chlorophyll_ByDate.xlsx"                 
+    ## [2] "MaineLakes_pHColorCond_Alk_ByDate.xlsx"             
+    ## [3] "MaineLakes_Phosphorus.xlsx"                         
+    ## [4] "MaineLakes_Secchi_ByDate.xlsx"                      
+    ## [5] "MaineLakes_Secchi_Color_Chemistry_AnnualMeans.xlsx" 
+    ## [6] "MaineLakes_Secchi_Color_Chemistry_OverallMeans.xlsx"
+    ## [7] "MaineLakes_Temp_DO.xlsx"
+
+``` r
 shortname <- c('CHLA', 'pH', 'Phosphorus', 'Secchi', 'Annual_Means', 'Overall_Means', 'Temp_DO')
 (flsdf <- tibble(fls, shortname))
 ```
@@ -440,10 +507,10 @@ Identification and morphometric data – available with a single entry per
 lake. 2. Summary data – with a single entry per Sampling Station 3.
 Annual Summary data – with a single entry per sampling station each
 year  
-4\. Secchi Depth Data – with a single entry per single entry per
-sampling event (where for our purposes, a sampling event can be
-interpreted as the combination of day, station and lake),  
-5\. Other observational data, with one or more values reported per
+4. Secchi Depth Data – with a single entry per single entry per sampling
+event (where for our purposes, a sampling event can be interpreted as
+the combination of day, station and lake),  
+5. Other observational data, with one or more values reported per
 sampling event, keyed to depth. 6. Depth and oxygen profiles. These are
 structured by date, lake, station, and multiple depths.
 
@@ -482,8 +549,8 @@ We have a list of data frame names, in the flsdf object. To explore
 this, it is convenient to be able to iterate over related data sets. We
 could create a list of data frames and iterate over that, but that risks
 consuming memory (if you change any of the data sets, triggereing R’s
-“copy on modify” rules). Instead, we use a little indirection, so al
-lwe need to keep is a list of data frame names as strings.
+“copy on modify” rules). Instead, we use a little indirection, so al lwe
+need to keep is a list of data frame names as strings.
 
 We can convert a text string into a reference to an underlying R symbol,
 which here points to a data frame, as follows:
@@ -494,15 +561,15 @@ head(eval(parse(text = nm)))
 ```
 
     ## # A tibble: 6 x 9
-    ##   MIDAS Lake  `Town(s)` Station Date                Depth `Total P`
-    ##   <chr> <chr> <chr>       <dbl> <dttm>              <dbl>     <dbl>
-    ## 1 0001  Solo~ Solon           1 2018-08-16 00:00:00     7         7
-    ## 2 0002  Indi~ Lexingto~       1 2006-08-17 00:00:00     3         9
-    ## 3 0002  Indi~ Lexingto~       1 2006-08-17 00:00:00     5        32
-    ## 4 0002  Indi~ Lexingto~       1 2006-08-22 00:00:00     0         7
-    ## 5 0002  Indi~ Lexingto~       1 2006-09-07 00:00:00     0         7
-    ## 6 0002  Indi~ Lexingto~       1 2014-08-14 00:00:00     3         8
-    ## # ... with 2 more variables: `Sample Type` <chr>, Qualifier <chr>
+    ##   MIDAS Lake          `Town(s)`     Station Date                Depth `Total P`
+    ##   <chr> <chr>         <chr>           <dbl> <dttm>              <dbl>     <dbl>
+    ## 1 0001  Solon Flowage Solon               1 2018-08-16 00:00:00     7         7
+    ## 2 0002  Indian Pond   Lexington Twp       1 2006-08-17 00:00:00     3         9
+    ## 3 0002  Indian Pond   Lexington Twp       1 2006-08-17 00:00:00     5        32
+    ## 4 0002  Indian Pond   Lexington Twp       1 2006-08-22 00:00:00     0         7
+    ## 5 0002  Indian Pond   Lexington Twp       1 2006-09-07 00:00:00     0         7
+    ## 6 0002  Indian Pond   Lexington Twp       1 2014-08-14 00:00:00     3         8
+    ## # ... with 2 more variables: Sample Type <chr>, Qualifier <chr>
 
 With that method in hand, we can iterate over a list of data frame names
 and look at the data frames themselves.
@@ -761,7 +828,7 @@ rm(test)
 
 ### Apply the Function to Target Data Frames
 
-We use `lapply` to generate a (HUGE\!) list of revised dataframes. This
+We use `lapply` to generate a (HUGE!) list of revised dataframes. This
 is a memory hog, but it works.
 
 ``` r
@@ -788,9 +855,9 @@ data is identical by MIDAS number without checking.
 ## Check Uniformity of Lake Context Data
 
 we construct a list of all MIDAS numbers reflected in any of the source
-data. The primary purpose is to check if MIDAS\< LAke NAme and Town are
-consistent across data sources, but it also provides a sumamry list of
-all Maoine Lakes with any monitoring data.
+data. The primary purpose is to check if MIDAS&lt; LAke NAme and Town
+are consistent across data sources, but it also provides a sumamry list
+of all Maoine Lakes with any monitoring data.
 
 ``` r
 # Pull out "MIDAS', 'Lake', and 'Town' data only
@@ -928,8 +995,6 @@ pH %>%
             count_na = sum(is.na(Aort)))
 ```
 
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-
     ## # A tibble: 22 x 4
     ##    Color_Method       count_A count_T count_na
     ##    <chr>                <int>   <int>    <int>
@@ -956,7 +1021,7 @@ L-10-308-00-1-A refers to a specific HACH spectrophotometric method for
 measuring color in water. WE reclassify it as another spectrophotometric
 method, and give it value ‘S’.
 
-We note that the N (\>150) appears to be a left censored observation,
+We note that the N (&gt;150) appears to be a left censored observation,
 and probably should not be coded in this way.
 
 We reclassify, but given uncertainties here, thse data are not likely to
@@ -1011,8 +1076,6 @@ Phosphorus %>%
   summarise(count_core = sum(Sample_Type == 'C'),
             count_grab = sum(Sample_Type == 'G'))
 ```
-
-    ## `summarise()` ungrouping output (override with `.groups` argument)
 
     ## # A tibble: 8 x 3
     ##   Qualifier count_core count_grab
@@ -1106,18 +1169,18 @@ sample_data
 ```
 
     ## # A tibble: 115,197 x 12
-    ##    MIDAS Lake  Town  Station Date                Depth Type  Color_Method
-    ##    <chr> <chr> <chr>   <dbl> <dttm>              <dbl> <chr> <chr>       
-    ##  1 3454  High~ Brid~       2 1938-06-29 00:00:00   0   G     <NA>        
-    ##  2 3454  High~ Brid~       2 1938-06-29 00:00:00   4.6 G     <NA>        
-    ##  3 3454  High~ Brid~       2 1938-06-29 00:00:00   6.1 G     <NA>        
-    ##  4 3454  High~ Brid~       2 1938-06-29 00:00:00   7.6 G     <NA>        
-    ##  5 3454  High~ Brid~       3 1938-06-29 00:00:00   0   G     <NA>        
-    ##  6 3454  High~ Brid~       3 1938-06-29 00:00:00   4.6 G     <NA>        
-    ##  7 3454  High~ Brid~       3 1938-06-29 00:00:00   6.1 G     <NA>        
-    ##  8 3454  High~ Brid~       3 1938-06-29 00:00:00   9.1 G     <NA>        
-    ##  9 3454  High~ Brid~       3 1938-06-29 00:00:00  14   G     <NA>        
-    ## 10 3454  High~ Brid~       1 1938-08-20 00:00:00   0   G     <NA>        
+    ##    MIDAS Lake        Town   Station Date                Depth Type  Color_Method
+    ##    <chr> <chr>       <chr>    <dbl> <dttm>              <dbl> <chr> <chr>       
+    ##  1 3454  Highland L~ Bridg~       2 1938-06-29 00:00:00   0   G     <NA>        
+    ##  2 3454  Highland L~ Bridg~       2 1938-06-29 00:00:00   4.6 G     <NA>        
+    ##  3 3454  Highland L~ Bridg~       2 1938-06-29 00:00:00   6.1 G     <NA>        
+    ##  4 3454  Highland L~ Bridg~       2 1938-06-29 00:00:00   7.6 G     <NA>        
+    ##  5 3454  Highland L~ Bridg~       3 1938-06-29 00:00:00   0   G     <NA>        
+    ##  6 3454  Highland L~ Bridg~       3 1938-06-29 00:00:00   4.6 G     <NA>        
+    ##  7 3454  Highland L~ Bridg~       3 1938-06-29 00:00:00   6.1 G     <NA>        
+    ##  8 3454  Highland L~ Bridg~       3 1938-06-29 00:00:00   9.1 G     <NA>        
+    ##  9 3454  Highland L~ Bridg~       3 1938-06-29 00:00:00  14   G     <NA>        
+    ## 10 3454  Highland L~ Bridg~       1 1938-08-20 00:00:00   0   G     <NA>        
     ## # ... with 115,187 more rows, and 4 more variables: Parameter <chr>,
     ## #   Value <dbl>, Method <chr>, Units <chr>
 

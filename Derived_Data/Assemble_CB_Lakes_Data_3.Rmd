@@ -124,7 +124,7 @@ relocate(Town, .after = Lake)
 ```
 
 #### Simplify Data
-some of those names are awkward and long, so we shorten them up
+Some of those names are awkward and long, so we shorten them up.
 ```{r}
 
 morpho_data <- morpho_data %>%
@@ -165,6 +165,7 @@ Maine_Lakes$Lake[! Maine_Lakes$MIDAS %in% morpho_data$MIDAS]
 ```
 ### Merge Morphometry Data with Lake Lists
 #### Test for Inconsistencies
+#### Lake Names
 ```{r}
 t1 <- Maine_Lakes %>% select(MIDAS, Lake, Town)
 t2 <- morpho_data  %>% select(MIDAS, Lake, Town)
@@ -176,7 +177,7 @@ t3 <- t1 %>% inner_join(t2, by = 'MIDAS')
 
 ```{r}
 t3[(t3$Lake.x != t3$Lake.y),] %>%
-  select(contains('Lake'))
+  select(MIDAS, contains('Lake'))
 
 ```
 So we have several thousand inconsistencies with regard to lake names, although
@@ -188,6 +189,41 @@ most appear to be:
 Many of the alternate lake names have been moved in the (more recent?) Maine
 Lakes data to the "Notes" Field.  We have not checked consistency.
 
+##### Adjusting Lake Names
+We start with the  names from the Maine Lakes data:
+```{r}
+morpho_data <- morpho_data %>%
+  mutate(Lake = Maine_Lakes$Lake[match(MIDAS, Maine_Lakes$MIDAS)])
+```
+
+Unfortunately, lake names are not consistent across the different DEP data files
+we accessed, so we need to develop a consistent naming scheme.
+ 
+For our purposes, however, we need only worry about a handful of confusing 
+lake names that occur on major lakes in the Casco Bay watershed for which we 
+have observational (Secchi) data. 
+
+Reviewers noted the following naming inconsistencies  or confusions in tables
+and graphics based on names from Maine Lakes and the Secchi data.
+
+```{r}
+tribble(
+~MIDAS, ~`Maine Lakes Name`, ~`Secchi Name`, ~Comment,
+3188,	'Foster Pond',	  "Ingalls (Foster's) Pond", 'Shorter name OK', 
+3734, 'Highland Lake',	'Highland (Duck) Lake', 'In Falmouth, Westbrook, Windham', 
+3454, 'Highland Lake', 'Highland Lake', 'In Bridgton', 
+3424, 'Little Moose Pond', 'Moose Pond', 'Longer name better')
+```
+
+What we do here is add our preferred names to the Morphometric data,
+so we can add those names (based on MIDAS numbers) to any other Lake data
+we are analyzing, specifically the Secchi data.
+```{r}
+morpho_data$Lake[morpho_data$MIDAS == 3734] <- 'Highland (Duck) Lake'
+morpho_data$Lake[morpho_data$MIDAS == 3424] <- 'Little Moose Pond'
+```
+
+#### Town Names
 ```{r}
 t3[(t3$Town.x != t3$Town.y),] %>%
   select(contains('Town'))
@@ -200,18 +236,14 @@ Maine Lakes list does not, generally selecting one town.
 The (newer!) observational data (see below) also lists multiple towns.  While
 those listings of multiple towns are internally consistent, We have not formally
 checked if the listing of multiple towns there is consistent with the Morphology
-Data (although in a few sopt checks, it does appear to be).
+Data (although in a few spot checks, it does appear to be).
 
-Our conclusion is that, for now, we want to keep the Morphometry list of Towns,
-but the lake names from Maine Lakes.
-
-So, to assemble a joined database, we only need to import the simpler
-Lake Name field, and rename the Town field to "Towns" to be clear that it
+Our conclusion is that, for now, we want to keep the Morphometry list of Towns.
+We only need to rename the Town field to "Towns" to be clear that it
 can include more than one, and thus avoid future conflicts.
 
 ```{r}
 morpho_data <- morpho_data %>%
-  mutate(Lake = Maine_Lakes$Lake[match(MIDAS, Maine_Lakes$MIDAS)]) %>%
   rename(Towns = Town)
 ```
 
@@ -243,7 +275,6 @@ write_csv(morpho_data, 'Lake_Morphometry_English.csv')
 write_csv(morpho_metric, 'Lake_Morphometry_Metric.csv')
 ```
 
-
 ## List Other Excel files found in `Original_Data`
 This omits the MOrphology data, which is an `*.xls` file, since we loaded it
 separately. We use a tiny tibble  to iterate over the source data, load it,
@@ -252,7 +283,11 @@ and give each data frame a short name..
 
 fls <- list.files(sister)
 fls <- fls[substr(fls,nchar(fls)-4, nchar(fls))=='.xlsx'] # Restrict to .xlsx 
-
+fls <- fls[1:7]  # Drop the Sebago Lake data, added after this code was first 
+                # developed.
+fls
+```
+```{r} 
 shortname <- c('CHLA', 'pH', 'Phosphorus', 'Secchi', 'Annual_Means', 'Overall_Means', 'Temp_DO')
 (flsdf <- tibble(fls, shortname))
 rm(shortname)

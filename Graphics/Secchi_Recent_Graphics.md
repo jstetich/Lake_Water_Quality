@@ -12,6 +12,7 @@ Curtis C. Bohlen, Casco Bay Estuary Partnership
             Data](#address-inconsistencies-in-sebago-lake-data)
         -   [Filter to Last Ten Years](#filter-to-last-ten-years)
     -   [Read Morphometric Data](#read-morphometric-data)
+    -   [Replace Lake Names](#replace-lake-names)
     -   [Lakes With Sufficient Data](#lakes-with-sufficient-data)
         -   [Graphic of Data by Year](#graphic-of-data-by-year)
         -   [List Ponds with Enough Data](#list-ponds-with-enough-data)
@@ -44,11 +45,9 @@ library(tidyverse)
     ## -- Attaching packages --------------------------------------- tidyverse 1.3.1 --
 
     ## v ggplot2 3.3.3     v purrr   0.3.4
-    ## v tibble  3.1.1     v dplyr   1.0.5
+    ## v tibble  3.1.2     v dplyr   1.0.6
     ## v tidyr   1.1.3     v stringr 1.4.0
     ## v readr   1.4.0     v forcats 0.5.1
-
-    ## Warning: package 'tibble' was built under R version 4.0.5
 
     ## Warning: package 'tidyr' was built under R version 4.0.5
 
@@ -124,7 +123,7 @@ secchi_data <- read_csv(file.path(sibling, fn))
 Eight of nine parsing errors are for Scope == “N”, Songo pond, (MIDAS =
 3262), for every observation in 2011. We decided that “N” here probably
 meant no scope was used, so Scope == 1 (or, Scope = “None”, after
-conversion to factor) is appropriate. We wil fix that after we add a
+conversion to factor) is appropriate. We will fix that after we add a
 “Year” value to the data.
 
 The ninth parsing error was for an observation from Woods Pond, in June
@@ -254,6 +253,29 @@ morpho.data <- read_csv(file.path(sibling, fn))
 
 ``` r
 #rm(fn,parent,sibfldnm,sibling)
+```
+
+## Replace Lake Names
+
+For consistency with tabular information developed in
+“Secchi\_Trend\_Analysis”, we need to replace the lake names from the
+Secchi data with the lake names from the morphometry data. That way
+names only have to be changed in one location,
+“Assemble\_CB\_Lakes\_Data\_3.Rmd”.
+
+``` r
+secchi_data$Lake[1:5]
+```
+
+    ## [1] "Ingalls (Foster's) Pond" "Ingalls (Foster's) Pond"
+    ## [3] "Ingalls (Foster's) Pond" "Ingalls (Foster's) Pond"
+    ## [5] "Ingalls (Foster's) Pond"
+
+``` r
+secchi_data <- secchi_data %>%
+  rename(Secchi_Lake_Name = Lake) %>%
+  mutate(Lake = morpho.data$Lake[match(MIDAS, morpho.data$MIDAS )]) %>%
+  relocate(Lake, .before = Secchi_Lake_Name)
 ```
 
 ## Lakes With Sufficient Data
