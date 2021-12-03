@@ -43,7 +43,7 @@ The downloaded lakes data has essentially three types of data:
     (Includes a TIME field, apparently for QA purposes).
 3.  All other parameters, which are  lake, station, depth, and date dependent.
 
-However, we may want to analyse depth profiles seperately, since they are so
+However, we may want to analyse depth profiles separately, since they are so
 important for understanding the physics of the lakes, and so important in terms
 of climate change impacts on lakes.
 
