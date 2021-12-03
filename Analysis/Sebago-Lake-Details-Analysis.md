@@ -27,10 +27,10 @@ Curtis C. Bohlen, Casco Bay Estuary Partnership
 
 Sebago lake is our region’s largest lake, and one of the most important.
 it is a crucial recreational resource for the region, and also provides
-high qUality drinking water for tens of thousands.
+high quality drinking water for tens of thousands.
 
 Not coincidentally, Sebago Lake also has one of the longest and riches
-records of water quality monitoting of any lake in the region.
+records of water quality monitoring of any lake in the region.
 
 Here we leverage that rich data to look a bit more closely at how water
 clarity varies in space and time.
@@ -207,8 +207,8 @@ analyses.
 
 # Analysis Logic
 
-We are interested in looking at smothed temporal trends, so we are
-probably looking at using a GAM model or a GAMM model ifwe want to
+We are interested in looking at smoothed temporal trends, so we are
+probably looking at using a GAM model or a GAMM model if we want to
 explicitly model stations as random factors. hat feels unnecessary for a
 preliminary analysis.
 
@@ -309,7 +309,7 @@ better or worse water clarity, especially around 1990 to 2002 or so.
 Since 2006, clarity has gradually improved. It is actually pretty
 remarkable that results are so consistent across the lake.
 
-the GGPLOT default smoothers missom of thies detail, because they
+the GGPLOT default smoothers miss some of this detail, because they
 oversmooth.
 
 ``` r
