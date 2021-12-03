@@ -120,7 +120,7 @@ It is also worth noting that Maine recognizes multiple versions of the
 phosphorus TSI, depending on how samples for Total Phosphorus was
 collected. We see that here, and in Maine DEP’s Lakes data (see below)
 but neither source provides clarity on whether the same mathematical
-formulae are used to calculating the indexes or not.
+formulae are used to calculate the indexes or not.
 
 # Maine TSI Definitions
 
