@@ -460,9 +460,9 @@ write_csv(morpho_metric, 'Lake_Morphometry_Metric.csv')
 
 ## List Other Excel files found in `Original_Data`
 
-This omits the MOrphology data, which is an `*.xls` file, since we
+This omits the Morphology data, which is an `*.xls` file, since we
 loaded it separately. We use a tiny tibble to iterate over the source
-data, load it, and give each data frame a short name..
+data, load it, and give each data frame a short name.
 
 ``` r
 fls <- list.files(sister)
@@ -548,7 +548,7 @@ for (row in 1:length(flsdf[[1]])) {
 We have a list of data frame names, in the flsdf object. To explore
 this, it is convenient to be able to iterate over related data sets. We
 could create a list of data frames and iterate over that, but that risks
-consuming memory (if you change any of the data sets, triggereing R’s
+consuming memory (if you change any of the data sets, triggering R’s
 “copy on modify” rules). Instead, we use a little indirection, so al lwe
 need to keep is a list of data frame names as strings.
 
@@ -692,11 +692,11 @@ function capitalizes every word, but in other **State of Casco Bay**
 repositories, we adopted different data column name conventions. It
 would be convenient to have  
 ready-made functions to help create syntactic names following consistent
-renaming conventons, as a way to reduce code complexity in future.
+renaming conventions, as a way to reduce code complexity in future.
 
 Although we do not go to that effort yet, we would want to allow the
-user to specify: the style of capitalization ; a list of word
-separators, , and how to handle units in parentheses.
+user to specify: the style of capitalization, a list of word
+separators, and how to handle units in parentheses.
 
 ``` r
 clean_names <- function(df_names) {
@@ -855,9 +855,9 @@ data is identical by MIDAS number without checking.
 ## Check Uniformity of Lake Context Data
 
 we construct a list of all MIDAS numbers reflected in any of the source
-data. The primary purpose is to check if MIDAS&lt; LAke NAme and Town
+data. The primary purpose is to check if MIDAS&lt; Lake Name and Town
 are consistent across data sources, but it also provides a sumamry list
-of all Maoine Lakes with any monitoring data.
+of all Maine Lakes with any monitoring data.
 
 ``` r
 # Pull out "MIDAS', 'Lake', and 'Town' data only
@@ -966,8 +966,8 @@ We see that: \* Every SAMPLE has associated either a ‘Type’ or
 ‘Sample\_Type’ variable, with potential values of ‘C’ (for epilimnetic
 core sample) or ‘G’ (for grab samples). \* `Ph` is associated with a
 `PH_Method`, with possible values (H=Hach, E=electronic, C=colorimetric,
-A=air-equilibrated.) It als has a `Type` value, which is either ‘C’ for
-Eplilimnetic Core, or ‘G’ for Grab. \* `Color` is associated with
+A=air-equilibrated.) It also has a `Type` value, which is either ‘C’ for
+Epilimnetic Core, or ‘G’ for Grab. \* `Color` is associated with
 `Aort`, with possible values: A = apparent color (unfiltered); T = true
 color (filtered). 9 = no data. It appears that in this setting “no data”
 means no data on the method used, but that is not entirely clear from
@@ -1024,7 +1024,7 @@ method, and give it value ‘S’.
 We note that the N (&gt;150) appears to be a left censored observation,
 and probably should not be coded in this way.
 
-We reclassify, but given uncertainties here, thse data are not likely to
+We reclassify, but given uncertainties here, these data are not likely to
 be analyzable.
 
 ``` r
