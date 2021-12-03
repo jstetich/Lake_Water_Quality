@@ -391,7 +391,7 @@ test %>%
     remove these data, so we leave them.
 
 2.  There is evidence that field duplicate sampling practices starting
-    in 1980s or so, in both data sources. That’s O.K.
+    in the 1980s or so, in both data sources. That’s O.K.
 
 3.  Some Secchi values are reported to three (or more) decimal places.
     Three decimal places for Secchi depth implies unlikely precision, to
