@@ -206,7 +206,7 @@ we have major gaps in the recent record. This probably reflects changes
 in how data has been reported to DEP.  
 2. The extreme low values in 2017 and 2018 correspond to the only two
 samples from a new station. Any recent trend is due to addition of this
-anomolous new source of data.
+anomalous new source of data.
 
 We correct these problems in two steps. First, we load in Portland Water
 District’s extensive Sebago Lake archive of Secchi data, then delete two
@@ -356,7 +356,7 @@ other violations of the assumption of normality. It is thus better
 suited to this (unsupervised) application. We calculated linear model
 slopes to show that the qualitative results of my analysis are largely
 insensitive to the details of the analysis used, but we will report
-resukts of the Theil-Sen analysis.
+results of the Theil-Sen analysis.
 
 Significance of the Thiel-Sel slopes is based either on the Wilcoxon
 Test used in the default `summary.mblm()` function, or on on Kendall’s
