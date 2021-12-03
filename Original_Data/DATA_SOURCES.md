@@ -62,8 +62,8 @@ was incomplete, with little data included in the DEP data from Sebago Lake
 since 2010.
 
 We requested supplementary data from Portland Water District, which manages
-long-term Sebago Lake MOnitoting, and recieved the file
-'Sebago export 2_24_2020.xlsx'.  PWD staff infomred us that they share their
+long-term Sebago Lake Monitoring, and received the file
+'Sebago export 2_24_2020.xlsx'.  PWD staff informed us that they share their
 data with DEP electronically, so it may not get incorporated
 into the on-line data, which is gathered principally through volunteer lake
 associations and the VLMP.
